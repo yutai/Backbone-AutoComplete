@@ -83,7 +83,15 @@ function AutoComplete(params){
 				function(model){ 
 					console.log('wewe')
 					console.log(view.options.holders)
-					if( view.options.holders.find(function(m) { console.log('hihi');console.log(m.get('id'));if (m.get('id') == model.get('id'))  return m}) )
+					var dink = view.options.holders.find(function(m) { 
+						console.log('eeeeeeeeeeeeeeeehihi');
+						if (m.get('id') == model.get('id'))  return m
+					});
+					console.log(dink)
+					if( view.options.holders.find(function(m) { 
+						console.log('eeeeeeeeeeeeeeeehihi');
+						if (m.get('id') == model.get('id'))  return m
+					}) )
 					return model 
 				}
 			);
