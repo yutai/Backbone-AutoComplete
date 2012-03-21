@@ -1,0 +1,61 @@
+<%= form_for(@banner) do |f| %>
+  <% if @banner.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@banner.errors.count, "error") %> prohibited this banner from being saved:</h2>
+
+      <ul>
+      <% @banner.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :ad_type %><br />
+    <%= f.text_field :ad_type %>
+  </div>
+  <div class="field">
+    <%= f.label :bid_type %><br />
+    <%= f.text_field :bid_type %>
+  </div>
+  <div class="field">
+    <%= f.label :max_bid %><br />
+    <%= f.text_field :max_bid %>
+  </div>
+  <div class="field">
+    <%= f.label :daily_budget %><br />
+    <%= f.text_field :daily_budget %>
+  </div>
+  <div class="field">
+    <%= f.label :total_budget %><br />
+    <%= f.text_field :total_budget %>
+  </div>
+  <div class="field">
+    <%= f.label :start_date %><br />
+    <%= f.date_select :start_date %>
+  </div>
+  <div class="field">
+    <%= f.label :end_date %><br />
+    <%= f.date_select :end_date %>
+  </div>
+  <div class="field">
+    <%= f.label :name_space %><br />
+    <%= f.text_field :name_space %>
+  </div>
+  <div class="field">
+    <%= f.label :thirdparty %><br />
+    <%= f.check_box :thirdparty %>
+  </div>
+  <div class="field">
+    <%= f.label :rich_media %><br />
+    <%= f.check_box :rich_media %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

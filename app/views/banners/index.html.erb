@@ -1,0 +1,43 @@
+<h1>Listing banners</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Ad type</th>
+    <th>Bid type</th>
+    <th>Max bid</th>
+    <th>Daily budget</th>
+    <th>Total budget</th>
+    <th>Start date</th>
+    <th>End date</th>
+    <th>Name space</th>
+    <th>Thirdparty</th>
+    <th>Rich media</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @banners.each do |banner| %>
+  <tr>
+    <td><%= banner.name %></td>
+    <td><%= banner.ad_type %></td>
+    <td><%= banner.bid_type %></td>
+    <td><%= banner.max_bid %></td>
+    <td><%= banner.daily_budget %></td>
+    <td><%= banner.total_budget %></td>
+    <td><%= banner.start_date %></td>
+    <td><%= banner.end_date %></td>
+    <td><%= banner.name_space %></td>
+    <td><%= banner.thirdparty %></td>
+    <td><%= banner.rich_media %></td>
+    <td><%= link_to 'Show', banner %></td>
+    <td><%= link_to 'Edit', edit_banner_path(banner) %></td>
+    <td><%= link_to 'Destroy', banner, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Banner', new_banner_path %>

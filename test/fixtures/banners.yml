@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  ad_type: MyString
+  bid_type: MyString
+  max_bid: 1.5
+  daily_budget: 1.5
+  total_budget: 1.5
+  start_date: 2012-03-20
+  end_date: 2012-03-20
+  name_space: MyString
+  thirdparty: false
+  rich_media: false
+
+two:
+  name: MyString
+  ad_type: MyString
+  bid_type: MyString
+  max_bid: 1.5
+  daily_budget: 1.5
+  total_budget: 1.5
+  start_date: 2012-03-20
+  end_date: 2012-03-20
+  name_space: MyString
+  thirdparty: false
+  rich_media: false

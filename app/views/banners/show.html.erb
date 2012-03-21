@@ -1,0 +1,60 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @banner.name %>
+</p>
+
+<p>
+  <b>Ad type:</b>
+  <%= @banner.ad_type %>
+</p>
+
+<p>
+  <b>Bid type:</b>
+  <%= @banner.bid_type %>
+</p>
+
+<p>
+  <b>Max bid:</b>
+  <%= @banner.max_bid %>
+</p>
+
+<p>
+  <b>Daily budget:</b>
+  <%= @banner.daily_budget %>
+</p>
+
+<p>
+  <b>Total budget:</b>
+  <%= @banner.total_budget %>
+</p>
+
+<p>
+  <b>Start date:</b>
+  <%= @banner.start_date %>
+</p>
+
+<p>
+  <b>End date:</b>
+  <%= @banner.end_date %>
+</p>
+
+<p>
+  <b>Name space:</b>
+  <%= @banner.name_space %>
+</p>
+
+<p>
+  <b>Thirdparty:</b>
+  <%= @banner.thirdparty %>
+</p>
+
+<p>
+  <b>Rich media:</b>
+  <%= @banner.rich_media %>
+</p>
+
+
+<%= link_to 'Edit', edit_banner_path(@banner) %> |
+<%= link_to 'Back', banners_path %>

@@ -1,0 +1,45 @@
+<%= form_for(@variation) do |f| %>
+  <% if @variation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@variation.errors.count, "error") %> prohibited this variation from being saved:</h2>
+
+      <ul>
+      <% @variation.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :banner_id %><br />
+    <%= f.number_field :banner_id %>
+  </div>
+  <div class="field">
+    <%= f.label :headline %><br />
+    <%= f.text_field :headline %>
+  </div>
+  <div class="field">
+    <%= f.label :adtext %><br />
+    <%= f.text_field :adtext %>
+  </div>
+  <div class="field">
+    <%= f.label :destination_url %><br />
+    <%= f.text_field :destination_url %>
+  </div>
+  <div class="field">
+    <%= f.label :display_url %><br />
+    <%= f.text_field :display_url %>
+  </div>
+  <div class="field">
+    <%= f.label :img_src %><br />
+    <%= f.text_field :img_src %>
+  </div>
+  <div class="field">
+    <%= f.label :fpa_url %><br />
+    <%= f.text_field :fpa_url %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

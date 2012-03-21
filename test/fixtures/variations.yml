@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  banner_id: 1
+  headline: MyString
+  adtext: MyString
+  destination_url: MyString
+  display_url: MyString
+  img_src: MyString
+  fpa_url: MyString
+
+two:
+  banner_id: 1
+  headline: MyString
+  adtext: MyString
+  destination_url: MyString
+  display_url: MyString
+  img_src: MyString
+  fpa_url: MyString

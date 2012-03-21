@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Banner:</b>
+  <%= @variation.banner_id %>
+</p>
+
+<p>
+  <b>Headline:</b>
+  <%= @variation.headline %>
+</p>
+
+<p>
+  <b>Adtext:</b>
+  <%= @variation.adtext %>
+</p>
+
+<p>
+  <b>Destination url:</b>
+  <%= @variation.destination_url %>
+</p>
+
+<p>
+  <b>Display url:</b>
+  <%= @variation.display_url %>
+</p>
+
+<p>
+  <b>Img src:</b>
+  <%= @variation.img_src %>
+</p>
+
+<p>
+  <b>Fpa url:</b>
+  <%= @variation.fpa_url %>
+</p>
+
+
+<%= link_to 'Edit', edit_variation_path(@variation) %> |
+<%= link_to 'Back', variations_path %>
