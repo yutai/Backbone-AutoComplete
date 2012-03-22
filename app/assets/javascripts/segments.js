@@ -37,13 +37,18 @@ $(document).ready(function() {
 	{
 		selector :
 		{
-			url  : '/sample_feed.json'
+			url : '/sample_feed.json',
+			size : 10
 		},
 		holder :
 		{ 
-			url  : '/banners/2/segments'
+			url : '/banners/2/segments'
 		},
-		el : $('#autoComplete')
+		el : $('#autoComplete'),
+		input_min_size : 1,
+		maxitems : 10000,
+		delay : 5
+		  
 	}
 	
 	var autoComplete1 = new AutoComplete(autoCompleteParams);
