@@ -24,25 +24,24 @@ function AutoComplete(params){
               };
 	var prompt = $('<li>Start typing to search...</li>');
 	    
-   function xssPrevent(string, flag) {
-        if (typeof flag != "undefined") {
-          for(i = 0; i < string.length; i++) {
-            var charcode = string.charCodeAt(i);
-            if ((_key.exclamation <= charcode && charcode <= _key.slash) ||
-                (_key.colon <= charcode && charcode <= _key.at) ||
-                (_key.squarebricket_left <= charcode && charcode <= _key.apostrof)) {
-              string = string.replace(string[i], escape(string[i]));
-            }
-          }
-          string = string.replace(/(\{|\}|\*)/i, "\\$1");
-        }
-        return string.replace(/script(.*)/g, "");
-      }           
+	function xssPrevent(string, flag) {
+		if (typeof flag != "undefined") {
+			for(i = 0; i < string.length; i++) {
+				var charcode = string.charCodeAt(i);
+				if ((_key.exclamation <= charcode && charcode <= _key.slash) ||
+				(_key.colon <= charcode && charcode <= _key.at) ||
+				(_key.squarebricket_left <= charcode && charcode <= _key.apostrof)) {
+					string = string.replace(string[i], escape(string[i]));
+				}
+			}
+			string = string.replace(/(\{|\}|\*)/i, "\\$1");
+		}
+		return string.replace(/script(.*)/g, "");
+	}           
 	App.Models = {
 		Selector : Backbone.Model.extend(),
 		Holder   : Backbone.Model.extend()
 	};
-	
 	
 	App.init = function()
 	{
@@ -169,6 +168,16 @@ function AutoComplete(params){
 			}, this);
 			$(domFrag).insertBefore(this.bitInput);
 	
+		},
+		appendItem : function(model)
+		{
+			console.log('here i am')
+			this.options.selectors.remove(model)
+			var modelView = new App.Views.Holder({
+				model : model,
+				collectionView : this
+			});
+			$(modelView.render().el).insertBefore(this.bitInput);
 		},
 		appendDomFrag : function(model, domFrag)
 		{
@@ -306,17 +315,7 @@ function AutoComplete(params){
 				}, 1);
 			}
 			return li
-	   },
-	
-		appendItem : function(model)
-		{
-			this.options.selectors.remove(model)
-			var modelView = new App.Views.Holder({
-				model : model,
-				collectionView : this
-			});
-			$(modelView.render().el).insertBefore(this.bitInput);
-		}
+	   }
 	});
 	
 	this.Views.Selector = Backbone.View.extend(

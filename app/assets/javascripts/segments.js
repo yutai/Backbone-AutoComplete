@@ -42,7 +42,7 @@ $(document).ready(function() {
 		},
 		holder :
 		{ 
-			url : '/banners/2/segments'
+			url : '/banners/' + banner_id + '/segments'
 		},
 		el : $('#autoComplete'),
 		input_min_size : 1,
