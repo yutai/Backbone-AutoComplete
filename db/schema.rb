@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120320204601) do
+ActiveRecord::Schema.define(:version => 20120322210051) do
 
   create_table "banners", :force => true do |t|
     t.string   "name"
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(:version => 20120320204601) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.integer  "otex_id"
+  end
+
+  create_table "source_segments", :force => true do |t|
+    t.string   "name"
+    t.integer  "price"
+    t.string   "bucket"
+    t.string   "provider"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "variations", :force => true do |t|

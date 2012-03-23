@@ -1,5 +1,7 @@
 BannerSegmentVariation::Application.routes.draw do
   
+  resources :source_segments
+
   match "/banners/:banner_id/otex" => "segments#otex"
 
   resources :banners do

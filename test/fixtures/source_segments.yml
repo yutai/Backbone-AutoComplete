@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  price: 1
+  bucket: MyString
+  provider: MyString
+
+two:
+  name: MyString
+  price: 1
+  bucket: MyString
+  provider: MyString

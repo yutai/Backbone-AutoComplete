@@ -1,0 +1,29 @@
+<h1>Listing source_segments</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Bucket</th>
+    <th>Provider</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @source_segments.each do |source_segment| %>
+  <tr>
+    <td><%= source_segment.name %></td>
+    <td><%= source_segment.price %></td>
+    <td><%= source_segment.bucket %></td>
+    <td><%= source_segment.provider %></td>
+    <td><%= link_to 'Show', source_segment %></td>
+    <td><%= link_to 'Edit', edit_source_segment_path(source_segment) %></td>
+    <td><%= link_to 'Destroy', source_segment, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= will_paginate @source_segments %>
+<%= link_to 'New Source segment', new_source_segment_path %>

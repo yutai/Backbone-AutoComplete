@@ -1,0 +1,33 @@
+<%= form_for(@source_segment) do |f| %>
+  <% if @source_segment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@source_segment.errors.count, "error") %> prohibited this source_segment from being saved:</h2>
+
+      <ul>
+      <% @source_segment.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :price %><br />
+    <%= f.number_field :price %>
+  </div>
+  <div class="field">
+    <%= f.label :bucket %><br />
+    <%= f.text_field :bucket %>
+  </div>
+  <div class="field">
+    <%= f.label :provider %><br />
+    <%= f.text_field :provider %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

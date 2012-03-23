@@ -5,7 +5,7 @@
 
 function AutoComplete(params){
 	
-	var App = this;
+	var AC = this;
 	var getBoxTimeout = 0;
 	var _key = { 'enter': 13,
                 'tab': 9,
@@ -38,27 +38,27 @@ function AutoComplete(params){
 		}
 		return string.replace(/script(.*)/g, "");
 	}           
-	App.Models = {
+	AC.Models = {
 		Selector : Backbone.Model.extend(),
 		Holder   : Backbone.Model.extend()
 	};
 	
-	App.init = function()
+	AC.init = function()
 	{
 		var selectorWrapper = $("<div class='facebook-auto' style='width: 512px;'></div>").appendTo(params.el)
 		var selectorsEl = $("<ul id='selectors' style='width: 512px; height: auto; display: block;'></ul>").appendTo(selectorWrapper);
 		var holdersEl = $("<ul id='holders' class='holder'></ul>").insertBefore(selectorWrapper)
-		App.selectorsCollection = new App.Collections.Selectors();
-		App.holdersCollection = new App.Collections.Holders();
-		App.selectorsView = new App.Views.Selectors({ 
-			holders : App.holdersCollection,
-			collection: App.selectorsCollection,
+		AC.selectorsCollection = new AC.Collections.Selectors();
+		AC.holdersCollection = new AC.Collections.Holders();
+		AC.selectorsView = new AC.Views.Selectors({ 
+			holders : AC.holdersCollection,
+			collection: AC.selectorsCollection,
 			el : selectorsEl
 		});
-		App.holdersView = new App.Views.Holders({ 
-			selectors: App.selectorsCollection,
-			selectorsView : App.selectorsView,
-			collection: App.holdersCollection,
+		AC.holdersView = new AC.Views.Holders({ 
+			selectors: AC.selectorsCollection,
+			selectorsView : AC.selectorsView,
+			collection: AC.holdersCollection,
 			el : holdersEl
 		});
 		getBoxTimeout = 0;
@@ -71,13 +71,13 @@ function AutoComplete(params){
 	//
 	//////////////////////////////
 
-	App.Collections = {};
-	App.Collections.Selectors = Backbone.Collection.extend({
-		model : App.Models.Selector,
+	AC.Collections = {};
+	AC.Collections.Selectors = Backbone.Collection.extend({
+		model : AC.Models.Selector,
 		url   : params.selector.url
 	});
-	App.Collections.Holders = Backbone.Collection.extend({
-		model : App.Models.Holder,
+	AC.Collections.Holders = Backbone.Collection.extend({
+		model : AC.Models.Holder,
 		url   : params.holder.url
 	});
 	
@@ -87,9 +87,9 @@ function AutoComplete(params){
 	//
 	//////////////////////////////
 	
-	App.Views = {};
+	AC.Views = {};
 	
-	App.Views.Selectors = Backbone.View.extend({
+	AC.Views.Selectors = Backbone.View.extend({
 		initialize : function()
 		{
 			console.log('AutoComplete.Views.Selectors started');
@@ -130,7 +130,7 @@ function AutoComplete(params){
 			console.log('in appendItem')
 			console.log(model)
 			var view = this;
-			var modelView = new App.Views.Selector({
+			var modelView = new AC.Views.Selector({
 				model : model,
 				collectionView : this
 			});
@@ -138,17 +138,17 @@ function AutoComplete(params){
 		}
 	});
 	
-	App.Views.Holders = Backbone.View.extend({
+	AC.Views.Holders = Backbone.View.extend({
 		initialize : function()
 		{
 			console.log('AutoComplete.Views.Holders started');
 			console.log(this.collection)
 			_.bindAll(this,'render','appendItem');
 			this.options.selectors.bind('reset', this.dink)
-			this.collection.bind('create',this.appendItem);
-			this.collection.bind('change',this.render);
+			this.collection.bind('add',this.appendItem);
 			this.collection.bind('reset',this.render);
-			this.bitInput = this.addInput(false);
+			this.bitInputWrapper = $('<li class="bit-input">');
+			this.bitInput = this.addInput(false).appendTo(this.bitInputWrapper);
 			this.collection.fetch();
 		},
 		dink : function()
@@ -159,32 +159,36 @@ function AutoComplete(params){
 			console.log('in AutoComplete.Views.holders render')
 			var el = $(this.el);
 			el.html('');
-			
-			this.bitInput.appendTo(el)
+			this.bitInput.val('');
+			this.bitInputWrapper.appendTo(el)
 	
 			var domFrag = document.createDocumentFragment();
 			_(this.collection.models).each(function(model){ // in case collection is not empty
 				this.appendDomFrag(model, domFrag);
 			}, this);
-			$(domFrag).insertBefore(this.bitInput);
+			$(domFrag).insertBefore(this.bitInputWrapper);
 	
 		},
 		appendItem : function(model)
 		{
+			console.log('in append item');
+			console.log(this.bitInput.val())
+			this.bitInput.val('');
 			console.log('here i am')
 			this.options.selectors.remove(model)
-			var modelView = new App.Views.Holder({
+			var modelView = new AC.Views.Holder({
 				model : model,
 				collectionView : this
 			});
-			$(modelView.render().el).insertBefore(this.bitInput);
+			$(modelView.render().el).insertBefore(this.bitInputWrapper);
 		},
 		appendDomFrag : function(model, domFrag)
 		{
-			console.log('in appendItem')
+			console.log('in appendDomFrag')
 			console.log(model)
+			
 			var view = this;
-			var modelView = new App.Views.Holder({
+			var modelView = new AC.Views.Holder({
 				model : model,
 				collectionView : this
 			});
@@ -192,10 +196,9 @@ function AutoComplete(params){
 		},
 		addInput : function(focusme) {
 			var view = this;
-			var li = $('<li class="bit-input">');
 			var input = $('<input type="text" class="maininput"  autocomplete="off">');
 	   	var el = $(this.el);
-	   	li.append(input);
+	   	
 	   	input.focus( function() {
 	   		isactive = true;
 	   		console.log('in focus')
@@ -296,7 +299,7 @@ function AutoComplete(params){
 					setTimeout( function() {
 						if (getBoxTimeoutValue != getBoxTimeout) return;
 						
-						view.options.selectors.fetch({data: {string: etext}});
+						view.options.selectors.fetch({data: {search: etext, per_page : 10}});
 					}, params.delay);
 				} else {
 					addMembers(etext);
@@ -314,7 +317,7 @@ function AutoComplete(params){
 					complete.children(".default").show();
 				}, 1);
 			}
-			return li
+			return input
 	   }
 	});
 	
@@ -332,8 +335,7 @@ function AutoComplete(params){
 		},
 		select : function()
 		{
-			console.log(this.options.collectionView.options.holders)
-			console.log(this.model)
+			console.log('in Selector selection action')
 			this.options.collectionView.options.holders.create({otex_id:this.model.get('id'), name: this.model.get('name')})
 			this.remove();
 		},
@@ -371,7 +373,7 @@ function AutoComplete(params){
 		}
 	});
 	
-	App.init();
+	AC.init();
 };
 
 

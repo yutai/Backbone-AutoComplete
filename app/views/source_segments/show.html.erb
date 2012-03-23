@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @source_segment.name %>
+</p>
+
+<p>
+  <b>Price:</b>
+  <%= @source_segment.price %>
+</p>
+
+<p>
+  <b>Bucket:</b>
+  <%= @source_segment.bucket %>
+</p>
+
+<p>
+  <b>Provider:</b>
+  <%= @source_segment.provider %>
+</p>
+
+
+<%= link_to 'Edit', edit_source_segment_path(@source_segment) %> |
+<%= link_to 'Back', source_segments_path %>

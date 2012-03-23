@@ -37,7 +37,7 @@ $(document).ready(function() {
 	{
 		selector :
 		{
-			url : '/sample_feed.json',
+			url : '/source_segments',
 			size : 10
 		},
 		holder :
