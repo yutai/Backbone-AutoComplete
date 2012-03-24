@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(:version => 20120322210051) do
 
   create_table "source_segments", :force => true do |t|
     t.string   "name"
-    t.integer  "price"
+    t.float    "price"
     t.string   "bucket"
     t.string   "provider"
     t.datetime "created_at", :null => false

@@ -93,7 +93,6 @@ function AutoComplete(params){
 		initialize : function()
 		{
 			console.log('AutoComplete.Views.Selectors started');
-			console.log(this.collection)
 			_.bindAll(this,'render','appendItem');
 			this.collection.bind('add',this.appendItem);
 			this.collection.bind('change',this.render);
@@ -105,30 +104,49 @@ function AutoComplete(params){
 		},
 		render : function(){
 			console.log('in AutoComplete.Views.Collection render')
+						
+
 			var el = $(this.el);
 			el.html('');
 			var domFrag = document.createDocumentFragment();
 			var view = this;
+			
+			var nonSelectedCounter = 0;
+			for (var i = 0; (nonSelectedCounter < 10) && (i < view.collection.length) ; i++)
+			{
+				console.log(this.collection.models[i].get('id'))
+				var id = this.collection.models[i].get('id')
+				if( !view.options.holders.find(function(m) { 
+					if (m.get('otex_id') == id)  return m
+				}) ) 
+				{
+					this.appendItem(view.collection.models[i], domFrag);
+					nonSelectedCounter++;
+				}
+				//nonSelected.push(view.collection.models[i])
+			}
+			/*
 			var non_selected = this.collection.reject(
 				function(model){ 
 					if( view.options.holders.find(function(m) { 
-						console.log('eeeeeeeeeeeeeeeehihi');
 						if (m.get('otex_id') == model.get('id'))  return m
 					}) )
 					return model 
 				}
 			);
-			for(var i=0; i<non_selected.length; i++) // in case collection is not empty
+			console.log('non_selected is ' + non_selected.length + ' and selectors is ' + this.collection.length + '. and nonSelected is ' + nonSelected.length)
+			
+			for(var i=0; i<nonSelected.length; i++) // in case collection is not empty
 			{
 				this.appendItem(non_selected[i], domFrag);
 			}
+			*/
 			el.append(domFrag)
 			el.fadeIn()
 		},
 		appendItem : function(model, domFrag)
 		{
 			console.log('in appendItem')
-			console.log(model)
 			var view = this;
 			var modelView = new AC.Views.Selector({
 				model : model,
@@ -144,17 +162,13 @@ function AutoComplete(params){
 			console.log('AutoComplete.Views.Holders started');
 			console.log(this.collection)
 			_.bindAll(this,'render','appendItem');
-			this.options.selectors.bind('reset', this.dink)
 			this.collection.bind('add',this.appendItem);
 			this.collection.bind('reset',this.render);
 			this.bitInputWrapper = $('<li class="bit-input">');
 			this.bitInput = this.addInput(false).appendTo(this.bitInputWrapper);
 			this.collection.fetch();
 		},
-		dink : function()
-		{
-			console.log('Selctors reset!')
-		},
+		
 		render : function(){
 			console.log('in AutoComplete.Views.holders render')
 			var el = $(this.el);
@@ -172,21 +186,17 @@ function AutoComplete(params){
 		appendItem : function(model)
 		{
 			console.log('in append item');
-			console.log(this.bitInput.val())
 			this.bitInput.val('');
-			console.log('here i am')
 			this.options.selectors.remove(model)
 			var modelView = new AC.Views.Holder({
 				model : model,
 				collectionView : this
 			});
 			$(modelView.render().el).insertBefore(this.bitInputWrapper);
+			this.options.selectors.reset();
 		},
 		appendDomFrag : function(model, domFrag)
-		{
-			console.log('in appendDomFrag')
-			console.log(model)
-			
+		{		
 			var view = this;
 			var modelView = new AC.Views.Holder({
 				model : model,
@@ -213,7 +223,6 @@ function AutoComplete(params){
 			});
 			input.blur( function() {
 				isactive = false;
-				console.log($(view.options.selectorsView.el))
 				$(view.options.selectorsView.el).fadeOut('fast');
 				/*
 				isactive = false;
@@ -226,8 +235,6 @@ function AutoComplete(params){
 			});
  
 			el.click( function() {
-				console.log('hi')
-				console.log(view)
 				setSize();
 				input.focus();
    /*
@@ -286,24 +293,30 @@ function AutoComplete(params){
 				}
 				if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length > params.input_min_size) {
 					view.load_feed(etext);
-					complete.children(".default").hide();
-					feed.show();
+					//complete.children(".default").hide();
+					//feed.show();
 				}
 			});
 			    
 			view.load_feed = function(etext){
 				counter = 0;
+				
+				///////////////
+				//
+				// Look into what reachingMax items means 
+				//
+				//////////////
 				if ( maxItems()) {
 					getBoxTimeout++;
 					var getBoxTimeoutValue = getBoxTimeout;
 					setTimeout( function() {
 						if (getBoxTimeoutValue != getBoxTimeout) return;
 						
-						view.options.selectors.fetch({data: {search: etext, per_page : 10}});
+						view.options.selectors.fetch({data: {search: etext, per_page : view.collection.length + 10}});
 					}, params.delay);
 				} else {
-					addMembers(etext);
-					bindEvents();
+					//addMembers(etext);
+					//bindEvents();
 				}
 			}
 
@@ -323,7 +336,7 @@ function AutoComplete(params){
 	
 	this.Views.Selector = Backbone.View.extend(
 	{
-		template : "<span>{{id}} - {{name}}</span>",
+		template : "<span>{{name}} ${{price}}</span>",
 		tagName : 'li', 
 		initialize : function()
 		{
@@ -336,7 +349,7 @@ function AutoComplete(params){
 		select : function()
 		{
 			console.log('in Selector selection action')
-			this.options.collectionView.options.holders.create({otex_id:this.model.get('id'), name: this.model.get('name')})
+			this.options.collectionView.options.holders.create({otex_id:this.model.get('id'), name: this.model.get('name'), price: this.model.get('price')})
 			this.remove();
 		},
 		render: function()
@@ -350,11 +363,12 @@ function AutoComplete(params){
 	
 	this.Views.Holder = Backbone.View.extend(
 	{
-		template : "<span>{{otex_id}} - {{name}}</span><span class='unselect'>x</span>",
+		template : "<span>{{name}}  ${{price}}</span><span class='unselect'>x</span>",
 		tagName : 'li', 
 		initialize : function()
 		{
 			_.bindAll(this,'render','unselect');
+			this.model.bind('destory', this.remove)
 		},
 		events :
 		{
@@ -362,7 +376,7 @@ function AutoComplete(params){
 		},
 		unselect : function()
 		{
-			this.remove();
+			console.log(this.model.destroy())
 		},
 		render: function()
 		{
