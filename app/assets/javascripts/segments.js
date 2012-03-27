@@ -47,7 +47,8 @@ $(document).ready(function() {
 		el : $('#autoComplete'),
 		input_min_size : 1,
 		maxitems : 10000,
-		delay : 5
+		delay : 5,
+		bucket : 'contextual'
 		  
 	}
 	

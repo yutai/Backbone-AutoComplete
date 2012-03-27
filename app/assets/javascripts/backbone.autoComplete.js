@@ -96,11 +96,7 @@ function AutoComplete(params){
 			_.bindAll(this,'render','appendItem');
 			this.collection.bind('add',this.appendItem);
 			this.collection.bind('change',this.render);
-			this.collection.bind('destory', this.removeItem);
 			this.collection.bind('reset',this.render);
-		},
-		removeItem: function(){
-			console.log('removeItem')
 		},
 		render : function(){
 			console.log('in AutoComplete.Views.Collection render')
@@ -163,12 +159,13 @@ function AutoComplete(params){
 			console.log(this.collection)
 			_.bindAll(this,'render','appendItem');
 			this.collection.bind('add',this.appendItem);
+			this.collection.bind('destory', this.bink)
 			this.collection.bind('reset',this.render);
 			this.bitInputWrapper = $('<li class="bit-input">');
 			this.bitInput = this.addInput(false).appendTo(this.bitInputWrapper);
 			this.collection.fetch();
 		},
-		
+		bink : function(){console.log('bink')},
 		render : function(){
 			console.log('in AutoComplete.Views.holders render')
 			var el = $(this.el);
@@ -312,7 +309,7 @@ function AutoComplete(params){
 					setTimeout( function() {
 						if (getBoxTimeoutValue != getBoxTimeout) return;
 						
-						view.options.selectors.fetch({data: {search: etext, per_page : view.collection.length + 10}});
+						view.options.selectors.fetch({data: {search: etext, per_page : view.collection.length + 10, bucket:params.bucket}});
 					}, params.delay);
 				} else {
 					//addMembers(etext);
@@ -344,13 +341,17 @@ function AutoComplete(params){
 		},
 		events :
 		{
-			'click' : 'select'
+			'click' : 'select',
+			'hover' : 'hover'
+		},
+		hover : function()
+		{
+			console.log('hover')
 		},
 		select : function()
 		{
 			console.log('in Selector selection action')
 			this.options.collectionView.options.holders.create({otex_id:this.model.get('id'), name: this.model.get('name'), price: this.model.get('price')})
-			this.remove();
 		},
 		render: function()
 		{
@@ -363,25 +364,29 @@ function AutoComplete(params){
 	
 	this.Views.Holder = Backbone.View.extend(
 	{
-		template : "<span>{{name}}  ${{price}}</span><span class='unselect'>x</span>",
+		template : "<span>{{name}}  ${{price}}</span><a class='closebutton' href='#'></a>",
 		tagName : 'li', 
 		initialize : function()
 		{
-			_.bindAll(this,'render','unselect');
-			this.model.bind('destory', this.remove)
+			_.bindAll(this,'render','unselect','remove');
+			
+			this.model.bind('destory', this.remove, this)
 		},
+		dink : function(){console.log('h9i')},
 		events :
 		{
-			'click span.unselect' : 'unselect'
+			'click a.closebutton' : 'unselect'
 		},
 		unselect : function()
 		{
-			console.log(this.model.destroy())
+			this.model.destroy();
+			this.remove();
 		},
 		render: function()
 		{
 			var el = $(this.el).addClass('bit-box');
 			el.html('');
+			
 			$(Mustache.to_html(this.template, this.model.toJSON())).appendTo(this.el);
 			return this
 		}

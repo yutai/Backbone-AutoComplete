@@ -2,7 +2,7 @@ class SourceSegmentsController < ApplicationController
   # GET /source_segments
   # GET /source_segments.json
   def index
-    @source_segments = SourceSegment.search(params[:search]).paginate(:per_page => params[:per_page], :page => params[:page])
+    @source_segments = SourceSegment.where('bucket = ?',params[:bucket]).search(params[:search]).paginate(:per_page => params[:per_page], :page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
