@@ -1,0 +1,247 @@
+<script>
+ var banner_id = <%= @banner.id %>;
+</script>
+
+
+<div class='grid_14' id='create_variations'>
+	<div class="inner_row">
+	   <div class="grid9 column">
+	   	<p >You can create up to 100 different variations of your ad. We will try each variation, and show your better-performing ads more often.</p>
+	   </div>
+	   <div class="grid4 column">
+	   	<span id="mcafee_feature" class="mcafee_purchase_flow_link"></span>
+	   </div>
+	</div>
+	
+	<div class="inner_row">
+		<%= form_for @variation, :html => { :multipart => true }, :remote => true do |f| %><% end %>
+		<div style="clear:both"></div>
+		<div id='bulk_load_area'>
+			<ul id='bulk_load_options'></ul>
+		</div>
+		<div style="clear:both"></div>
+		<table id='variations_table'>
+			
+		</table>
+	</div>
+	<div style="clear:both"></div>
+</div>
+	
+<!--
+	==================================
+	TEMPLATES
+   ==================================
+-->
+
+
+<!-- banner details  -->
+<script  id="banner_details_template" type="text/x-jquery-tmpl">
+	<input type='hidden' name='ad_type' value='${ad_type.id}'>
+	<input type='hidden' name='bid_type' value='${bid_type.id}'>
+	<input type='hidden' name='campaign_id' value='${campaign.id}'>
+	<input type='hidden' name='banner_id' value=''>
+</script>
+
+<!-- bulk load options  -->
+<script  id="bulk_load_option" type="text/x-jquery-tmpl">
+	<li class="import_options_contracted">{{name}}</li>
+</script>
+
+<!-- load from previous campaigns -->
+<script id='load_from_previous_campaigns_template' type="text/x-jquery-tmpl">
+	<div id="load_ads_section" class='grid9 column load_upload_sections' >
+		<div class='module'>
+			<select id="load_campaigns" name="campaigns">
+				<option value="">Select campaign</option>
+			</select>
+			<input type="button" value="Load ads" class="button" id="load-btn" />
+		</div>
+	</div>
+</script>
+
+<!-- CSV upload  -->
+<script id='import_ads_template' type="text/x-jquery-tmpl">
+	<div id="upload_ads_section" class='grid9 column load_upload_sections' >
+		<div class='module'>
+			<p>Import your ads from a comma separated value file (.csv) [<a href="http://www.adbrite.com/mb/adbrite_text_ad_upload.php" target="_blank">sample template</a>]</p>
+			<form enctype="multipart/form-data" action="aj_write_ad.php" method="POST">
+				<input id="import-file" name="import-file" type="file">
+				<input value="Import" id="import-btn" type="submit">
+			</form>
+		</div>
+	</div>	
+</script>
+
+<!-- previous campaign  -->
+<script  id="previous_campaign" type="text/x-jquery-tmpl">
+	<option value='${id}'>{{name}}</option>
+</script>
+
+<!-- IMAGE create variations  -->
+<script  id="image_variations_template" type="text/x-jquery-tmpl">
+	<div id='variations_ui'>
+		<div id="preview-image" class="grid9 column  " >
+			<div id="create-image-input" class="variations_input_fields  block_content">
+				<div id="edit-preview"></div>
+				<div id="upload-div" style="display:block">
+					<table>
+						<tr>
+							<th>
+								<label for="image_file">Image file</label>
+							</th>
+							<td>
+								<input type="file" id='image_file' name='image_file'  class="grid6 variations_input required">
+								<div id='image_file_error' class='image_errors variation_errors error_feedback'></div>
+								<div class="input-desc" id="image_file_desc">maximum file size 50k, .gif, .jpg, .png</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="image_name">Image name</label>
+							</th>
+							<td>
+								<input type="text" id="image_name" class="grid6 variations_input required" name="image_name" maxlength="50" value=""/>
+								<div id='image_name_error' class='image_errors variation_errors error_feedback'></div>
+								<div class="input-desc" id="image_name_desc">used for reference / alt text</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="destination_url">Destination URL</label>
+							</th>
+							<td>
+								<input type="text" id="destination_url" class="grid6 url variations_input required" name="destination_url" value="" /> 
+								<div id='image_target_url_error'  class='image_errors variation_errors error_feedback' ></div>
+								<div class="input-desc" id="target_url_desc">maximum 1015 characters</div>
+							</td>
+						</tr>
+						<tr>
+							<th></th>
+							<td>
+								<input type='submit' value='submit'>
+								<a class="button save_ad" id="save_ad">Save</a>
+							</td>
+						</tr>
+					</table>        
+				</div>
+			</div>
+		</div>
+		<div id="banner-specs-container" class="grid4 column ">
+			<div id="banner_specs">
+				<h2>Accepted File Dimensions</h2>
+				<table></table>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!-- banner sizes  -->			
+<script id="ad_size_template" type="text/x-jquery-tmpl">
+   <tr> <td>
+    	{{name}}
+    </td>
+    <td>
+    	{{width}} x {{height}}
+    </td></tr>
+</script>
+
+<!-- image variation  -->	
+<script id="image_variation_template" type="text/x-jquery-tmpl">
+    <td>
+    	<img src='${src}' />
+    	<br />
+    	{{name}}
+    </td>
+    <td>
+    	<span class='delete_variation'>x</span>
+    </td>
+</script>
+
+<!-- TEXT create variations  -->
+
+<script  id="text_variations_template" type="text/x-jquery-tmpl">
+	<div id='variations_ui'>
+		<div id="preview-image" class="grid9 column variations_ui" >
+			<div id="create-image-input" class="variations_input_fields  block_content">
+				<div id="edit-preview"></div>
+				<div id="upload-div" style="display:block">
+					<table>
+						<tr>
+							<th>
+								<label for="headline">Ad headline</label>
+							</th>
+							<td>
+								<input type="text" id="headline" class="grid6 char_count required" name="variation[headline]" maxlength="25" value=""/>
+								<div id='headline_error' class='text_errors variation_errors error_feedback'></div>
+								<div class="input-desc" id="headline_desc"><span class='char_default'></span><span class='char_remaining'></span> characters remaining</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="image_name">Ad text</label>
+							</th>
+							<td>
+								<input type="adtext" id="text" class="grid6 char_count required" name="variation[adtext]" maxlength="70" value=""/>
+								<div id='text_error' class='text_errors variation_errors error_feedback'></div>
+								<div class="input-desc" id="text_desc"><span class='char_default'></span><span class='char_remaining'></span> characters remaining</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="destination_url">Destination URL</label>
+							</th>
+							<td>
+								<input type="text" id="destination_url" class="grid6 char_count url required"  maxlength="1015" name="variation[destination_url]" value="" /> 
+								<div id='destination_url_error'  class='text_errors variation_errors error_feedback' ></div>
+								<div class="input-desc" id="destination_url_desc"><span class='char_default'></span><span class='char_remaining'></span> characters remaining</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="display_url">Display URL</label>
+							</th>
+							<td>
+								<div id='auto_display_url'>
+									<span id='auto_display_url_text'></span> [<span id='edit_display_url'>edit</span>]
+								</div>
+								<div id='manual_display_url'> <input type="text" id="display_url" class="grid6 char_count required" name="variation[display_url]" value="" maxlength="35" /> 
+								<div id='display_url_error'  class='text_errors variation_errors error_feedback' ></div>
+								<div class="input-desc" id="display_url_desc"><span class='char_default'></span><span class='char_remaining'></span> characters remaining</div>
+							</td>
+						</tr>
+						<tr>
+							<th></th>
+							<td>
+								<input type='submit' value='submit'>
+								<a class="button save_ad" id="save_ad">Save</a>
+							</td>
+						</tr>
+					</table>        
+				</div>
+			</div>
+		</div>
+		<div id="ad-preview-container" class="grid4 column ">
+			<div id="ad-preview">
+				<h2>Ad preview</h2>
+				<a href='ad_preview_destination_url'>
+				<div id='ad_preview_headline'>head</div>
+				<div id='ad_preview_text'>te</div>
+				<div id='ad_preview_display_url'>de</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!-- text variation-->
+<script id="text_variation_template" type="text/x-jquery-tmpl">
+    <td>
+    	{{headline}}<br>
+    	{{text}}<br>
+    	{{display_url}}
+    </td>
+    <td>
+    	<span class='delete_variation'>x</span>
+    </td>
+</script>
+	

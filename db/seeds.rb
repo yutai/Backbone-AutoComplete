@@ -19,6 +19,6 @@ SourceSegment.create([
 Banner.create(
   [
 
-    {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+    {:ad_type => 'image', :bid_type => 'cpc'},{:ad_type => 'image', :bid_type => 'cpm'},{:ad_type => 'text', :bid_type => 'cpc'},{:ad_type => 'fpa', :bid_type => 'cpm'},{:ad_type => 'image', :bid_type => 'cpc'},{:ad_type => 'image', :bid_type => 'cpm'},{:ad_type => 'image', :bid_type => 'cpc'},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
   ]
 )

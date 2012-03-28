@@ -3,12 +3,13 @@ BannerSegmentVariation::Application.routes.draw do
   resources :source_segments
 
   match "/banners/:banner_id/otex" => "segments#otex"
+   match "/banners/:banner_id/ajax_create_vars" => "variations#ajax"
 
   resources :banners do
     resources :variations
     resources :segments
   end
-
+resources :variations
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

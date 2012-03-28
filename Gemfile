@@ -20,7 +20,7 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
 end
-
+gem 'remotipart'
 gem 'jquery-rails'
 gem 'backbone-on-rails'
 gem "twitter-bootstrap-rails"

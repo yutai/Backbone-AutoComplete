@@ -4,7 +4,8 @@ class CreateSegments < ActiveRecord::Migration
       t.string :name
       t.float :price
       t.integer :banner_id
-
+      t.string :bucket
+      t.integer :source_segment_id
       t.timestamps
     end
   end

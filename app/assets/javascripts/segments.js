@@ -8,9 +8,7 @@ $(document).ready(function() {
 		{
 			console.log('start App init')
 			var selectorsCollection = new App.Collections.Selectors();
-			var holdersCollection = new App.Collections.Holders([
-				{"id":"e555","name":"Financial > Pays Bills Online - $0.50"}
-			]);
+			var holdersCollection = new App.Collections.Holders();
 			var selectorsView = new App.Views.Selectors({ 
 				holders : holdersCollection,
 				collection: selectorsCollection,
@@ -21,8 +19,6 @@ $(document).ready(function() {
 				collection: holdersCollection,
 				el : $('#holders')
 			});
-			console.log('ddd')
-			console.log(holdersCollection);
 		}
 	};
 	
@@ -33,7 +29,7 @@ $(document).ready(function() {
  * 
  */
 	
-	var autoCompleteParams = 
+	var autoCompleteParams1 = 
 	{
 		selector :
 		{
@@ -44,7 +40,7 @@ $(document).ready(function() {
 		{ 
 			url : '/banners/' + banner_id + '/segments'
 		},
-		el : $('#autoComplete'),
+		el : $('#autoComplete1'),
 		input_min_size : 1,
 		maxitems : 10000,
 		delay : 5,
@@ -52,9 +48,27 @@ $(document).ready(function() {
 		  
 	}
 	
-	var autoComplete1 = new AutoComplete(autoCompleteParams);
-	console.log('about to print from autoComplete1')
-	console.log(autoComplete1.holdersCollection.toJSON())
+	var autoComplete1 = new AutoComplete(autoCompleteParams1);
 	
+	var autoCompleteParams2 = 
+	{
+		selector :
+		{
+			url : '/source_segments',
+			size : 10
+		},
+		holder :
+		{ 
+			url : '/banners/' + banner_id + '/segments'
+		},
+		el : $('#autoComplete2'),
+		input_min_size : 1,
+		maxitems : 10000,
+		delay : 5,
+		bucket : 'geographical'
+		  
+	}
+	
+	var autoComplete2 = new AutoComplete(autoCompleteParams2);
 	
 });

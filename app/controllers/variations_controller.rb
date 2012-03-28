@@ -37,6 +37,12 @@ class VariationsController < ApplicationController
     @variation = Variation.find(params[:id])
   end
 
+
+  def ajax
+    @variation = Variation.new
+    @banner = Banner.find(params[:banner_id])
+  end
+
   # POST /variations
   # POST /variations.json
   def create

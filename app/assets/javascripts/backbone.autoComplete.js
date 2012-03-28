@@ -110,10 +110,9 @@ function AutoComplete(params){
 			var nonSelectedCounter = 0;
 			for (var i = 0; (nonSelectedCounter < 10) && (i < view.collection.length) ; i++)
 			{
-				console.log(this.collection.models[i].get('id'))
 				var id = this.collection.models[i].get('id')
 				if( !view.options.holders.find(function(m) { 
-					if (m.get('otex_id') == id)  return m
+					if (m.get('source_segment_id') == id)  return m
 				}) ) 
 				{
 					this.appendItem(view.collection.models[i], domFrag);
@@ -142,7 +141,6 @@ function AutoComplete(params){
 		},
 		appendItem : function(model, domFrag)
 		{
-			console.log('in appendItem')
 			var view = this;
 			var modelView = new AC.Views.Selector({
 				model : model,
@@ -163,7 +161,7 @@ function AutoComplete(params){
 			this.collection.bind('reset',this.render);
 			this.bitInputWrapper = $('<li class="bit-input">');
 			this.bitInput = this.addInput(false).appendTo(this.bitInputWrapper);
-			this.collection.fetch();
+			this.collection.fetch({data:{bucket:params.bucket}});
 		},
 		bink : function(){console.log('bink')},
 		render : function(){
@@ -351,7 +349,7 @@ function AutoComplete(params){
 		select : function()
 		{
 			console.log('in Selector selection action')
-			this.options.collectionView.options.holders.create({otex_id:this.model.get('id'), name: this.model.get('name'), price: this.model.get('price')})
+			this.options.collectionView.options.holders.create({source_segment_id:this.model.get('id'), name: this.model.get('name'), price: this.model.get('price'), bucket : this.model.get('bucket')})
 		},
 		render: function()
 		{

@@ -3,7 +3,7 @@ class SegmentsController < ApplicationController
   # GET /segments.json
   def index
     @banner = Banner.find(params[:banner_id])
-    @segments = @banner.segments
+    @segments = @banner.segments.where('bucket =?', params[:bucket])
     
     respond_to do |format|
       format.html # index.html.erb

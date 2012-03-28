@@ -32,9 +32,10 @@ ActiveRecord::Schema.define(:version => 20120322210051) do
     t.string   "name"
     t.float    "price"
     t.integer  "banner_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.integer  "otex_id"
+    t.string   "bucket"
+    t.integer  "source_segment_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "source_segments", :force => true do |t|
