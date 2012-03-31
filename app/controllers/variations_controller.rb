@@ -2,7 +2,8 @@ class VariationsController < ApplicationController
   # GET /variations
   # GET /variations.json
   def index
-    @variations = Variation.all
+    @banner = Banner.find(params[:banner_id])
+    @variations = @banner.variations
 
     respond_to do |format|
       format.html # index.html.erb
@@ -47,11 +48,11 @@ class VariationsController < ApplicationController
   # POST /variations.json
   def create
     @variation = Variation.new(params[:variation])
-
+    @variation.banner_id = params[:banner_id]
     respond_to do |format|
       if @variation.save
         format.html { redirect_to @variation, :notice => 'Variation was successfully created.' }
-        format.json { render :json => @variation, :status => :created, :location => @variation }
+        format.json { render :json => @variation, :status => :created}
       else
         format.html { render :action => "new" }
         format.json { render :json => @variation.errors, :status => :unprocessable_entity }

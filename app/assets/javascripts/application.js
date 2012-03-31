@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.remotipart
 //= require underscore
 //= require backbone
 //= require banner_segment_variation

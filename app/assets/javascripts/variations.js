@@ -64,9 +64,9 @@ console.log(variationsTable.variations)
 		banner_id : banner_id,
 		ad_type : ad_type
 	}
-	$("#uploadForm").create_variations(params).validate({
-		submitHandler: function(form) {
+	$("#newVariationsForm").create_variations(params).validate({
+	/*	submitHandler: function(form) {
 			$(form).submit();
-		}
+		}*/
 	});
 });

@@ -28,7 +28,8 @@
 				},
 				render: function()
 				{
-					$(this.options.template).tmpl(this.model.attributes).appendTo(this.el);
+					console.log('in VariationView render')
+					$(Mustache.to_html(this.options.template, this.model.toJSON())).appendTo(this.el);
 					return this; 
 				},
 				unrender: function()
@@ -43,14 +44,19 @@
 			});
 			return new View(args);
 		},
-		Variations : Backbone.Collection.extend({ 
-			model : Variation,
-			url:'/banners/' + self.data('banner_id') + '/variations' 
-		}),
+		Variations : function(banner_id) 
+		{
+			var Variations = Backbone.Collection.extend({ 
+				model : Variation,
+				url:'/banners/' + banner_id + '/variations' 
+			})
+			return new Variations
+		},
 		VariationsView : function(args){
 			var self = this;
 			var View = Backbone.View.extend({
 				initialize: function(){
+					console.log('in VariationsView init')
 					_.bindAll(this, 'render', 'appendItem');
 					this.collection.bind('add', this.appendItem); 
 					this.collection.bind('reset', this.render);// collection event binder
@@ -97,10 +103,13 @@
 		},
 		make_form : function() 
 		{
+			console.log('in make Form')
+			
 			var self = this;
 			$('#save_ad').click(function(){
 				if($(self).valid())
 				{
+					console.log(self)
 					$(self).submit();
 				}
 			});
@@ -117,12 +126,27 @@
 					$(self).create_variations('clear_errors');
 				});
 				$(self).ajaxForm({
+					dataType : 'json',
 					clearForm : false,
-					success : function(responseText){
-						
+					beforeSubmit: function(a,f,o) {
+		            //o.dataType = 'json';
+		            o.dataType = $('#uploadResponseType')[0].value;
+		            //$('#uploadForm').html('Submitting...');
+		         },
+					success : function(data){
+						console.log('ajaxForm submit success')
+						//console.log(responseText)
+						var $out = $('#uploadOutput');
+		            $out.html('Form success handler received: <strong>' + typeof data + '</strong>');
+		            if (typeof data == 'object' && data.nodeType)
+		                data = elementToString(data.documentElement, true);
+		            else if (typeof data == 'object')
+		                data = objToString(data);
+		            $out.append('<div><pre>'+ data +'</pre></div>');
+						/*
 						var response = $.parseJSON(responseText);
 						$(self).create_variations('update',response);
-						if(response.success) $(self).resetForm();
+						if(response.success) $(self).resetForm();*/
 					}
 				});
 			});
@@ -295,44 +319,48 @@
 		{
 			var self = this;
 			console.log('werwerwrwers')
-			//return this.each(function(){
+			return this.each(function(){
 				
 				console.log('init')
 				self.data('banner_id',params.banner_id)
-				console.log(self.data('banner_id'))
 				$('#variations_ui').remove();		
 				//var add_banner_details = $('#banner_details_template').tmpl(response).appendTo(this);
-				//var template_display = $('#' + response.ad_type.id + '_variations_template').tmpl().appendTo(this);
+				
+				//insert the form based on ad_type
+				
+				$(Mustache.to_html($('#' + params.ad_type + '_variations_template').html(),{banner_id:banner_id})).appendTo(this);
 		
 				if (typeof(self.data('variations')) == 'undefined')
 				{
 					console.log('should be defining self data vars')
-					self.data({
-						variations : new self.create_variations('Variations'),
+					/*self.data({
+						variations : self.create_variations('Variations', params.banner_id),
 						uid : Math.random() * 100
-					});
+					})*/;
 				}
 				
-				console.log('hi')
-				console.log(self.data('variations'))
+				var collection = self.create_variations('Variations', params.banner_id)
+				
 				self.data({
 					variationsView : $(self).create_variations(
 						'VariationsView',
 						{
 							el : $('#variations_table'),
-							collection : self.data('variations'),
-							template : '#' + params.ad_type + '_variation_template'
+							collection : collection,
+							template : $('#' + params.ad_type + '_variation_template').html()
 						}
 					)
 				});
 				var banner_specs_table = $('#banner_specs table');
+				/*
 				for (var i=0; i < response.ad_sizes.length; i++)
 				{
 					var size_display = $('#ad_size_template').tmpl(response.ad_sizes[i]).appendTo(banner_specs_table);
 				}
+				*/
 				$(this).create_variations('make_form');	
 				
-				$(self).data({ad_type: response.ad_type.id});
+				$(self).data({ad_type: params.ad_type});
 				switch ($(self).data('ad_type') )
 				{
 					case "text"  : $(self).create_variations('text_init');
@@ -344,6 +372,8 @@
 				//  load related campaigns
 				//
 				///////////////////////
+				
+				/*
 				var bulk_load_area = $('#bulk_load_area');
 				var bulk_load_options = $('#bulk_load_options');
 				var bulk_load_option = $('#bulk_load_option');
@@ -422,7 +452,7 @@
 					}
 				);
 				
-				
+				*/
 				////////////////////////
 				//
 				//  character counter
@@ -440,7 +470,7 @@
 					});  
 				});  
 				
-			//});
+			});
 			console.log('deeeeeee')
 		}
 	};

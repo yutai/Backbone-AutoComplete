@@ -29,6 +29,8 @@ $(document).ready(function() {
  * 
  */
 	
+	
+	/*
 	var autoCompleteParams1 = 
 	{
 		selector :
@@ -48,7 +50,7 @@ $(document).ready(function() {
 		  
 	}
 	
-	var autoComplete1 = new AutoComplete(autoCompleteParams1);
+	//var autoComplete1 = new AutoComplete(autoCompleteParams1);
 	
 	var autoCompleteParams2 = 
 	{
@@ -68,7 +70,7 @@ $(document).ready(function() {
 		bucket : 'geographical'
 		  
 	}
-	
-	var autoComplete2 = new AutoComplete(autoCompleteParams2);
+	*/
+	//var autoComplete2 = new AutoComplete(autoCompleteParams2);
 	
 });
