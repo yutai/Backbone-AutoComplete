@@ -6,43 +6,28 @@
 	//  --------------------------
 	//
 	///////////////////////////////////////////// 	
-	var Variation = Backbone.Model.extend();
-
-
+	var VT = {
+		Views : {},
+		Collections : {},
+		Models : {}
+	};
+	
+	
+	
+	
+	
 	var methods = 
 	{
 		//Variation : Backbone.Model.extend(),
-		
+		/*
 		VariationView : function(args){
 			var self = this;
-			var View = Backbone.View.extend({
-				tagName: 'tr', 
-				events: 
-				{ 
-					'click span.delete_variation' : 'remove'
-				},		
-				initialize: function()
-				{
-					_.bindAll(this, 'render', 'unrender', 'remove'); 
-					this.model.bind('remove', this.unrender);
-				},
-				render: function()
-				{
-					console.log('in VariationView render')
-					$(Mustache.to_html(this.options.template, this.model.toJSON())).appendTo(this.el);
-					return this; 
-				},
-				unrender: function()
-				{
-					$(this.el).fadeOut('fast', function(){$(this).remove();});
-				},
-				remove: function()
-				{
-					this.model.destroy();
-					return false;
-				}
-			});
-			return new View(args);
+			var View = Backbone.View.extend();
+			_.extend(View.prototype, ActionTable.RowView);
+			console.log(args)
+			var dink = new View(args);
+			console.log(dink)
+			return dink;
 		},
 		Variations : function(banner_id) 
 		{
@@ -50,11 +35,15 @@
 				model : Variation,
 				url:'/banners/' + banner_id + '/variations' 
 			})
+			_.extend(Variations.prototype, ActionTable.Rows);
 			return new Variations
 		},
 		VariationsView : function(args){
+			console.log(args)
 			var self = this;
 			var View = Backbone.View.extend({
+				
+				/*
 				initialize: function(){
 					console.log('in VariationsView init')
 					_.bindAll(this, 'render', 'appendItem');
@@ -69,29 +58,36 @@
             changed : function() {
             	console.log(this);
             },
+            RowView : self.create_variations('VariationView'),
 				render: function(){
 					$(this.el).html('');
 					$(this.el).append("<ul class='targeting_list " + this.options.template + "'></ul>");
 					_(this.collection.models).each(function(item){ // in case collection is not empty
 						this.appendItem(item);
 					}, this);
-				},
+				}/*,
+				
 				appendItem: function(variation){
 					var view = this;
-					var variationView = new $(self).create_variations(
-						'VariationView',
-						{
+					var dink = {
 							model   : variation,
 							template : this.options.template
-						}
+						};
+					console.log('here')
+					console.log(dink)
+					var variationView = $(self).create_variations(
+						'VariationView',
+						dink
 					);
 					$(this.el).prepend(variationView.render().el);
 				}
 			});
+			
+			_.extend(View.prototype, ActionTable.RowsView);
 			return new View(args);
 		},
 		
-		
+		*/
 		
 		
 		clear_errors : function()
@@ -126,23 +122,23 @@
 					$(self).create_variations('clear_errors');
 				});
 				$(self).ajaxForm({
-					dataType : 'json',
 					clearForm : false,
-					beforeSubmit: function(a,f,o) {
-		            //o.dataType = 'json';
-		            o.dataType = $('#uploadResponseType')[0].value;
-		            //$('#uploadForm').html('Submitting...');
-		         },
+					
 					success : function(data){
 						console.log('ajaxForm submit success')
 						//console.log(responseText)
 						var $out = $('#uploadOutput');
-		            $out.html('Form success handler received: <strong>' + typeof data + '</strong>');
-		            if (typeof data == 'object' && data.nodeType)
+		            //$out.html('Form success handler received: <strong>' + typeof data + '</strong>');
+		            data = JSON.parse($(data).text())
+		            console.log(data)
+		            console.log(self.data('variations'))
+		            self.data('variations').add(data)
+		           /* if (typeof data == 'object' && data.nodeType)
 		                data = elementToString(data.documentElement, true);
 		            else if (typeof data == 'object')
 		                data = objToString(data);
-		            $out.append('<div><pre>'+ data +'</pre></div>');
+		            
+		            //$out.append('<div><pre>'+ data +'</pre></div>');
 						/*
 						var response = $.parseJSON(responseText);
 						$(self).create_variations('update',response);
@@ -318,8 +314,29 @@
 		init : function(params)
 		{
 			var self = this;
-			console.log('werwerwrwers')
 			return this.each(function(){
+				
+				
+				VT.Models.Variation = Backbone.Model.extend();
+				_.extend(VT.Models.Variation.prototype, ActionTable.Row);
+				
+				VT.Collections.Variations = Backbone.Collection.extend({
+					model : VT.Models.Variation,
+					url : '/banners/' + params.banner_id + '/variations'
+				});
+				_.extend(VT.Collections.Variations.prototype, ActionTable.Rows);
+				console.log('about to print template')
+			   console.log($('#image_variation_template').html());
+				VT.Views.Variation = Backbone.View.extend({
+					template : $('#'+ params.ad_type + '_variation_template').html()
+				});
+				_.extend(VT.Views.Variation.prototype, ActionTable.RowView)
+				
+				VT.Views.Variations = Backbone.View.extend({
+					type:'table',
+					RowView : VT.Views.Variation
+				})
+				_.extend(VT.Views.Variations.prototype, ActionTable.RowsView); 
 				
 				console.log('init')
 				self.data('banner_id',params.banner_id)
@@ -329,28 +346,34 @@
 				//insert the form based on ad_type
 				
 				$(Mustache.to_html($('#' + params.ad_type + '_variations_template').html(),{banner_id:banner_id})).appendTo(this);
-		
+		/*
 				if (typeof(self.data('variations')) == 'undefined')
 				{
 					console.log('should be defining self data vars')
 					/*self.data({
 						variations : self.create_variations('Variations', params.banner_id),
 						uid : Math.random() * 100
-					})*/;
+					});
 				}
 				
-				var collection = self.create_variations('Variations', params.banner_id)
+				*/
+				console.log('bink')
+				var collection = new VT.Collections.Variations()
+				console.log(collection)
+				
+				self.data('variations', collection);
 				
 				self.data({
-					variationsView : $(self).create_variations(
-						'VariationsView',
-						{
+					variationsView : new VT.Views.Variations({
 							el : $('#variations_table'),
 							collection : collection,
-							template : $('#' + params.ad_type + '_variation_template').html()
-						}
-					)
+							template : $('#' + params.ad_type + '_variation_template').html(),
+							statusDiv : params.statusDiv
+					})
 				});
+				
+											console.log('werwerwrwers')
+
 				var banner_specs_table = $('#banner_specs table');
 				/*
 				for (var i=0; i < response.ad_sizes.length; i++)
@@ -373,21 +396,25 @@
 				//
 				///////////////////////
 				
-				/*
+				
 				var bulk_load_area = $('#bulk_load_area');
 				var bulk_load_options = $('#bulk_load_options');
 				var bulk_load_option = $('#bulk_load_option');
 				
+				
+				
+				
 				$.ajax(
 					{
-						url		: "api/create_variations/upload_load_variations.php", 
-						data		: params,
+						url		: "/banners/" + params.banner_id + '/importable_banners.json', 
+						data		: {ad_type: params.ad_type, bid_type : params.bid_type},
 						dataType : 'json',
-						type		: 'POST',
+						type		: 'GET',
 						success	: function(response)
 						{
-							if (response.success)
+							if (response)
 							{
+								console.log(response)
 								function toggle_load_upload(el, target)
 								{
 									el.click(function(){
@@ -402,35 +429,36 @@
 										}
 									});
 								}
-								if (response.allow_csv) {
-									var import_ads = $('#import_ads_template').tmpl().appendTo(bulk_load_area);
-									var bulk_option = $('#bulk_load_option').tmpl({name : 'Import ads'}).appendTo(bulk_load_options);
+								//if (response.allow_csv) {
+									var import_ads = $(Mustache.to_html($('#import_ads_template').html(), {})).appendTo(bulk_load_area);
+									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Import ads'})).appendTo(bulk_load_options);
+									
+									
 									toggle_load_upload(bulk_option, import_ads);
-								}
-								if (response.campaigns.length > 0) {
-									var load_ads_section = $('#load_from_previous_campaigns_template').tmpl().appendTo(bulk_load_area);
+							//	}
+								if (response.length > 0) {
+									var load_ads_section = $(Mustache.to_html($('#load_from_previous_campaigns_template').html(), {})).appendTo(bulk_load_area);
 									var load_campaigns = $('#load_campaigns');
-									var bulk_option = $('#bulk_load_option').tmpl({name : 'Load ads from another campaign'}).appendTo(bulk_load_options);
+									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Load ads from another campaign'})).appendTo(bulk_load_options);
 									toggle_load_upload(bulk_option,load_ads_section);
 									
-									for (var j=0; j<response.campaigns.length; j++)
+									for (var j=0; j<response.length; j++)
 									{
-										var previous_campaign = $('#previous_campaign').tmpl(response.campaigns[j]).appendTo(load_campaigns);
+										var previous_campaign = $(Mustache.to_html($('#previous_campaign').html(), response[j])).appendTo(load_campaigns);
 									}
 									$('#load-btn').click(function(){
 										$.ajax(
 											{
-												url		: "api/create_variations_load_ads.php", 
-												data		: { campaign_id : load_campaigns.val()},
+												url		: "/banners/"+ load_campaigns.val()+"/variations.json", 
 												dataType : 'json',
 												type		: 'POST',
-												success	: function(response)
+												success	: function(vars)
 												{
-													if (response.success)
+													if (vars)
 													{
-														for (var k=0; k<response.variations.length; k++)
+														for (var k=0; k<vars.length; k++)
 														{
-															var variation = new Variation(response.variations[k]);
+															var variation = new VT.Models.Variation(vars[k]);
 															self.data('variations').add(variation);
 														}
 													}
@@ -449,10 +477,10 @@
 							}
 						},
 						error    : function(response){}
-					}
+					}	
 				);
 				
-				*/
+				
 				////////////////////////
 				//
 				//  character counter

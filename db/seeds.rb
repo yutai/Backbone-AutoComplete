@@ -19,6 +19,33 @@ SourceSegment.create([
 Banner.create(
   [
 
-    {:ad_type => 'image', :bid_type => 'cpc'},{:ad_type => 'image', :bid_type => 'cpm'},{:ad_type => 'text', :bid_type => 'cpc'},{:ad_type => 'fpa', :bid_type => 'cpm'},{:ad_type => 'image', :bid_type => 'cpc'},{:ad_type => 'image', :bid_type => 'cpm'},{:ad_type => 'image', :bid_type => 'cpc'},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+    {:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner1'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 1'},
+{:ad_type => 'text', :bid_type => 'cpc',  :name => 'text cpc banner 1'},
+{:ad_type => 'fpa', :bid_type => 'cpm',  :name => 'fpa cpm banner 1'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 2'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 2'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 3'},
+    {:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner4'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 5'},
+{:ad_type => 'text', :bid_type => 'cpc',  :name => 'text cpc banner 2'},
+{:ad_type => 'fpa', :bid_type => 'cpm',  :name => 'fpa cpm banner 2'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 5'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 46'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner se'},
+    {:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 684'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 84'},
+{:ad_type => 'text', :bid_type => 'cpc',  :name => 'text cpc banner 658'},
+{:ad_type => 'fpa', :bid_type => 'cpm',  :name => 'fpa cpm banner 3251'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner es'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 15'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 78'},
+    {:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 111'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 22'},
+{:ad_type => 'text', :bid_type => 'cpc',  :name => 'text cpc banner 19'},
+{:ad_type => 'fpa', :bid_type => 'cpm',  :name => 'fpa cpm banner 91'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 135'},
+{:ad_type => 'image', :bid_type => 'cpm',  :name => 'image cpm banner 84'},
+{:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 48'},
   ]
 )

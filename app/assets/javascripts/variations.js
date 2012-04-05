@@ -57,12 +57,15 @@ var variationsTable = new VariationsTable();
 console.log('about to print variations')
 console.log(variationsTable.variations)
 	*/
-	
+	var statusDiv = $('<div></div>');
+	statusDiv.top_of_page_status();
 	
 	var params = 
 	{
 		banner_id : banner_id,
-		ad_type : ad_type
+		ad_type : ad_type,
+		bid_type : bid_type,
+		statusDiv : statusDiv
 	}
 	$("#newVariationsForm").create_variations(params).validate({
 	/*	submitHandler: function(form) {

@@ -1,6 +1,7 @@
 <script>
  var banner_id = <%= @banner.id %>;
  var ad_type = "<%= @banner.ad_type %>";
+  var bid_type = "<%= @banner.bid_type %>";
 </script>
 
 
@@ -15,21 +16,15 @@
 	</div>
 	
 	<div class="inner_row">
-		<form action="/banners/<%= @banner.id %>/variations"  id="newVariationsForm" enctype="multipart/form-data" method="post">
-			<select id="uploadResponseType" name="mimetype">
-                    <option value="html">html</option>
-                    <option value="json">json</option>
-                    <option value="script">script</option>
-                    <option value="xml">xml</option>
-                </select>
-			<input type='submit' />
+		<form action="/banners/<%= @banner.id %>/variations.json"  id="newVariationsForm" enctype="multipart/form-data" method="post">
+		
 		</form>
 		<div style="clear:both"></div>
 		<div id="bulk_load_area">
 			<ul id="bulk_load_options"></ul>
 		</div>
 		<div style="clear:both"></div>
-		<table id="variations_table">
+		<table id="variations_table" class='table'>
 			
 		</table>
 	</div>
@@ -99,7 +94,7 @@
 								<label for="image_file">Image file</label>
 							</th>
 							<td>
-								<input type="file" id="image_file" name="image_file"  class="grid6 variations_input required">
+								<input type="file" id="image_file" name=""  class="grid6 variations_input required">
 								<div id="image_file_error" class="image_errors variation_errors error_feedback"></div>
 								<div class="input-desc" id="image_file_desc">maximum file size 50k, .gif, .jpg, .png</div>
 							</td>
@@ -109,7 +104,7 @@
 								<label for="image_name">Image name</label>
 							</th>
 							<td>
-								<input type="text" id="image_name" class="grid6 variations_input required" name="image_name" maxlength="50" value=""/>
+								<input type="text" id="image_name" class="grid6 variations_input required" name="" maxlength="50" value=""/>
 								<div id="image_name_error" class="image_errors variation_errors error_feedback"></div>
 								<div class="input-desc" id="image_name_desc">used for reference / alt text</div>
 							</td>
@@ -119,7 +114,7 @@
 								<label for="destination_url">Destination URL</label>
 							</th>
 							<td>
-								<input type="text" id="destination_url" class="grid6 url variations_input required" name="destination_url" value="" /> 
+								<input type="text" id="destination_url" class="grid6 url variations_input required" name="variation[destination_url]" value="" /> 
 								<div id="image_target_url_error"  class="image_errors variation_errors error_feedback" ></div>
 								<div class="input-desc" id="target_url_desc">maximum 1015 characters</div>
 							</td>

@@ -404,8 +404,8 @@ ActionTable.RowsView = {
 	initialize: function(){ 
 		console.log('in RowsView init')
 		var self = this;
-		_.bindAll(this,'render','appendItem');
-		this.collection.bind('add',this.appendItem);
+		_.bindAll(this,'render','appendItem','appendItem2');
+		this.collection.bind('add',this.appendItem2);
 		this.collection.bind('fetch',this.dink)
 		this.collection.bind('change',this.render);
 		this.collection.bind('reset',this.render);
@@ -459,11 +459,34 @@ ActionTable.RowsView = {
 			case "ul"    : tagName = 'li' ; break;
 			default      : tagName = 'div';  
 		}
+		console.log('tagName is ' + tagName)
+		console.log(this)
 		var rowView = new this.RowView({
 			model : row,
 			tagName : tagName
 		});
+		console.log('domFrag is ')
+		console.log(domFrag)
 		if(rowView) domFrag.appendChild(rowView.render().el);
+	},
+	appendItem2 : function(row)
+	{
+		var view = this;
+		var tagName;
+		switch (this.container_type)
+		{
+			case "table" : tagName = 'tr'; break;
+			case "ul"    : tagName = 'li' ; break;
+			default      : tagName = 'div';  
+		}
+		console.log('tagName is ' + tagName)
+		console.log(this)
+		var rowView = new this.RowView({
+			model : row,
+			tagName : tagName
+		});
+		
+		if(rowView) $(view.el).prepend(rowView.render().el);
 	},
 	paginator_ui : null,
 	render: function(page){

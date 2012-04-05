@@ -37,6 +37,15 @@ class BannersController < ApplicationController
     @banner = Banner.find(params[:id])
   end
 
+
+  def importable_banners
+    @banners = Banner.where('ad_type = ? AND bid_type = ? AND id != ?', params[:ad_type], params[:bid_type], params[:id] )
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render :json => @banners }
+    end
+  end
+
   # POST /banners
   # POST /banners.json
   def create
