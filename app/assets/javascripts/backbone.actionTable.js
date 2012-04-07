@@ -27,7 +27,6 @@ ActionTable.Rows = {
 	},
 	_filter : function()
 	{
-		console.log('in Rows._filter')
 		return this.models
 	},
 	searchTerm : '',
@@ -49,7 +48,7 @@ ActionTable.Rows = {
 					{
 						for (key in model.attributes)
 						{
-							if(String(model.get(key)).toLowerCase().match(trimmedSearchTerm)) { console.log('passed');return model} 
+							if(String(model.get(key)).toLowerCase().match(trimmedSearchTerm)) { return model} 
 						}
 					}
 					else
@@ -222,6 +221,7 @@ ActionTable.Paginate = function(){
 	{
 		if (!this.paginate_area) this.paginate_area = $('<div class="action_table_tool pagination" ></div>').appendTo(el);
 		if (!this.paginate_ul) this.paginate_ul = $('<ul class="paginate_ul"></ul>').appendTo(this.paginate_area);
+
 		self.pages = new self.Pages([]);
 		self.pagesView = new self.PagesView(
 			{
@@ -404,9 +404,8 @@ ActionTable.RowsView = {
 	initialize: function(){ 
 		console.log('in RowsView init')
 		var self = this;
-		_.bindAll(this,'render','appendItem','appendItem2');
-		this.collection.bind('add',this.appendItem2);
-		this.collection.bind('fetch',this.dink)
+		_.bindAll(this,'render','appendItem','appendItem2','addToCollection');
+		this.collection.bind('add',this.addToCollection);
 		this.collection.bind('change',this.render);
 		this.collection.bind('reset',this.render);
 		this.collection.bind('sort',this.sort);
@@ -420,13 +419,11 @@ ActionTable.RowsView = {
 	types : ['table','ul','div'],
 	fetchCollection : function()
 	{
-		console.log('in RowsView.fetchCollection')
 		this.collection.paramedFetch(this.options.statusDiv)
 	},
 	filteredRows : new ActionTable.Collections.FilteredRows([]),
 	
 	resetFilteredRows : function(){
-		console.log('in RowsView.resetFilterRows')
 		var filtered = this.collection.filterSearch();
 		this.filteredRows.reset(filtered);
 		
@@ -459,18 +456,24 @@ ActionTable.RowsView = {
 			case "ul"    : tagName = 'li' ; break;
 			default      : tagName = 'div';  
 		}
-		console.log('tagName is ' + tagName)
-		console.log(this)
 		var rowView = new this.RowView({
 			model : row,
 			tagName : tagName
 		});
-		console.log('domFrag is ')
-		console.log(domFrag)
+		console.log('in appendItem')
 		if(rowView) domFrag.appendChild(rowView.render().el);
+	},
+	addToCollection : function(row)
+	{
+		console.log('row is');
+		console.log(row)
+		console.log('in addToCollection')
+		row.save();
+		this.appendItem2(row)
 	},
 	appendItem2 : function(row)
 	{
+		console.log('in appendItem2')
 		var view = this;
 		var tagName;
 		switch (this.container_type)
@@ -479,14 +482,13 @@ ActionTable.RowsView = {
 			case "ul"    : tagName = 'li' ; break;
 			default      : tagName = 'div';  
 		}
-		console.log('tagName is ' + tagName)
-		console.log(this)
 		var rowView = new this.RowView({
 			model : row,
 			tagName : tagName
 		});
 		
 		if(rowView) $(view.el).prepend(rowView.render().el);
+		this.pager();
 	},
 	paginator_ui : null,
 	render: function(page){

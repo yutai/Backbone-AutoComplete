@@ -2,6 +2,7 @@
 
 <table>
   <tr>
+    <th>ID</th>
     <th>Banner</th>
     <th>Headline</th>
     <th>Adtext</th>
@@ -16,6 +17,7 @@
 
 <% @variations.each do |variation| %>
   <tr>
+    <td><%= variation.id %></td>
     <td><%= variation.banner_id %></td>
     <td><%= variation.headline %></td>
     <td><%= variation.adtext %></td>

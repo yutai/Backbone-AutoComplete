@@ -1,10 +1,16 @@
+<h1>Segments</h1>
+
+<%= javascript_include_tag "segments","backbone.autoComplete" %>
+
 <script>
- var banner_id = <%= @banner.id %>;
+	var banner_id = <%= @banner.id %>;
+	var ad_type   = "<%= @banner.ad_type %>";
+	var bid_type  = "<%= @banner.bid_type %>";
 </script>
 
-	<div id="autoComplete1"></div>
-	<br /><br /><br /><br /><br />
-	<div id="autoComplete2"></div>
+<div id="autoComplete1"></div>
+<br /><br />
+<div id="autoComplete2"></div>
 	
 		
 	

@@ -45,8 +45,11 @@ function AutoComplete(params){
 	
 	AC.init = function()
 	{
+		//var selector_hover = false;
 		var selectorWrapper = $("<div class='facebook-auto' style='width: 512px;'></div>").appendTo(params.el)
 		var selectorsEl = $("<ul id='selectors' style='width: 512px; height: auto; display: block;'></ul>").appendTo(selectorWrapper);
+		//selectorsEl.mouseenter(function(){selector_hover = true});
+		selectorsEl.mouseleave(function(){$(this).fadeOut();});
 		var holdersEl = $("<ul id='holders' class='holder'></ul>").insertBefore(selectorWrapper)
 		AC.selectorsCollection = new AC.Collections.Selectors();
 		AC.holdersCollection = new AC.Collections.Holders();
@@ -98,6 +101,7 @@ function AutoComplete(params){
 			this.collection.bind('change',this.render);
 			this.collection.bind('reset',this.render);
 		},
+
 		render : function(){
 			console.log('in AutoComplete.Views.Collection render')
 						
@@ -218,7 +222,8 @@ function AutoComplete(params){
 			});
 			input.blur( function() {
 				isactive = false;
-				$(view.options.selectorsView.el).fadeOut('fast');
+				//$(view.options.selectorsView.el).fadeOut('slow', function(){console.log('blurred')});
+				
 				/*
 				isactive = false;
 				if (complete_hover) {
@@ -340,11 +345,13 @@ function AutoComplete(params){
 		events :
 		{
 			'click' : 'select',
-			'hover' : 'hover'
+			'mouseover' : 'hover'
 		},
+	
 		hover : function()
 		{
 			console.log('hover')
+			console.log(this.model.get('name'))
 		},
 		select : function()
 		{

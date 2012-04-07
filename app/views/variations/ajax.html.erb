@@ -1,3 +1,5 @@
+<%= javascript_include_tag  "backbone.actionTable","jquery.topPageStatus","jquery.form","jquery.validate.min","jquery.createVariations","variations" %>
+
 <script>
  var banner_id = <%= @banner.id %>;
  var ad_type = "<%= @banner.ad_type %>";
@@ -27,6 +29,7 @@
 		<table id="variations_table" class='table'>
 			
 		</table>
+		<div id="paginate"></div>
 	</div>
 	<div style="clear:both"></div>
 	<div id="uploadOutput"></div>
@@ -238,7 +241,7 @@
 <!-- text variation-->
 <script id="text_variation_template" type="text/x-jquery-tmpl">
     <td>
-    	{{headline}}<br>
+    	{{id}} - {{headline}}<br>
     	{{adtext}}<br>
     	{{display_url}}
     </td>

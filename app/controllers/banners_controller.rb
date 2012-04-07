@@ -39,7 +39,7 @@ class BannersController < ApplicationController
 
 
   def importable_banners
-    @banners = Banner.where('ad_type = ? AND bid_type = ? AND id != ?', params[:ad_type], params[:bid_type], params[:id] )
+    @banners = Banner.joins(:variations).where('banners.ad_type = ? AND banners.bid_type = ? AND banners.id != ?', params[:ad_type], params[:bid_type], params[:id] ).group(:id)
     respond_to do |format|
       format.html # index.html.erb
       format.json { render :json => @banners }

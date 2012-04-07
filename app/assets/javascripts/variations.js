@@ -1,3 +1,5 @@
+//= require backbone.actionTable.js
+
 $(document).ready(function() {
 /*
   $("#uploadForm").create_variations(banner_id, response).validate({

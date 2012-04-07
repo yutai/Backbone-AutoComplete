@@ -324,11 +324,17 @@
 					model : VT.Models.Variation,
 					url : '/banners/' + params.banner_id + '/variations'
 				});
+				
 				_.extend(VT.Collections.Variations.prototype, ActionTable.Rows);
-				console.log('about to print template')
-			   console.log($('#image_variation_template').html());
+				
 				VT.Views.Variation = Backbone.View.extend({
-					template : $('#'+ params.ad_type + '_variation_template').html()
+					template : $('#'+ params.ad_type + '_variation_template').html(),
+					rowFunction : function()
+					{
+						var view = this;
+						console.log(view.model)
+						$(view.el).find('span.delete_variation').click(function(){view.model.set('display_url','www.setset.com');view.model.save();});
+					}
 				});
 				_.extend(VT.Views.Variation.prototype, ActionTable.RowView)
 				
@@ -337,6 +343,8 @@
 					RowView : VT.Views.Variation
 				})
 				_.extend(VT.Views.Variations.prototype, ActionTable.RowsView); 
+				
+				
 				
 				console.log('init')
 				self.data('banner_id',params.banner_id)
@@ -371,6 +379,8 @@
 							statusDiv : params.statusDiv
 					})
 				});
+				self.data('variationsView').numericalSort('id',-1);
+				self.data('variationsView').pager();
 				
 											console.log('werwerwrwers')
 
@@ -436,6 +446,7 @@
 									
 									toggle_load_upload(bulk_option, import_ads);
 							//	}
+								console.log(response)
 								if (response.length > 0) {
 									var load_ads_section = $(Mustache.to_html($('#load_from_previous_campaigns_template').html(), {})).appendTo(bulk_load_area);
 									var load_campaigns = $('#load_campaigns');
@@ -451,14 +462,24 @@
 											{
 												url		: "/banners/"+ load_campaigns.val()+"/variations.json", 
 												dataType : 'json',
-												type		: 'POST',
+												type		: 'GET',
 												success	: function(vars)
 												{
+													console.log('vars: ')
+													console.log(vars)
 													if (vars)
 													{
 														for (var k=0; k<vars.length; k++)
 														{
-															var variation = new VT.Models.Variation(vars[k]);
+															var variation = new VT.Models.Variation({
+																headline        : vars[k]['headline'],
+																adtext          : vars[k]["adtext"],
+																destination_url : vars[k]["destination_url"],
+																display_url     : vars[k]["display_url"],
+																img_src         : vars[k]["img_src"],
+																fpa_url         : vars[k]["fpa_url"]
+															})
+															//var variation = new VT.Models.Variation(vars[k]);
 															self.data('variations').add(variation);
 														}
 													}

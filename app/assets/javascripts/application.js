@@ -16,4 +16,5 @@
 //= require underscore
 //= require backbone
 //= require banner_segment_variation
-//= require_tree .
+//= require mustache.js
+//= require_self
