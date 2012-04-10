@@ -70,8 +70,6 @@ console.log(variationsTable.variations)
 		statusDiv : statusDiv
 	}
 	$("#newVariationsForm").create_variations(params).validate({
-	/*	submitHandler: function(form) {
-			$(form).submit();
-		}*/
+		
 	});
 });

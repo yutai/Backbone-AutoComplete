@@ -1,3 +1,19 @@
+
+var w =   {};
+	function checkURL() {
+		console.log('in checkURL')
+	   if (!w.closed && w.location) {
+	      w.close();
+	   } else {
+	      w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
+	      if (w.opener) w.opener = self;
+	      window.top.focus();
+	   }
+	}
+	$('<input type="button" value="test" />').click(function(){
+		console.log('checkURL is')
+		console.log(checkURL())
+	}).appendTo('body');
 (function($){
 	/////////////////////////////////////////////
 	// 
@@ -11,6 +27,33 @@
 		Collections : {},
 		Models : {}
 	};
+	
+	function checkLoc(duration,popout) {
+	   if (!w.closed) {
+	      w.onunload = '';
+	      w.close();
+	      if (popout) {
+	         clearErrorMsgs();
+	         var d1 = document.getElementById('target_url_desc');
+	         var d2 = document.createElement('div');
+	         d2.className = 'input-desc error-background';
+	         d2.innerHTML = 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.';
+	         d1.parentNode.insertBefore(d2,d1);
+	         enableForm();
+	         document.getElementById('save-ad-clicked').value = '';
+	      } else if (parseInt(duration) > 5000) {
+	         enableForm();
+	         var seconds = Math.round(duration/10)/100;
+	         if (seconds >= 15) seconds = seconds + ' seconds or more';
+	         else seconds = seconds + ' seconds';
+	         var conf = confirm('Your ad took ' + seconds + ' to fully load.\nWe recommend that your ad takes no\nlonger than 5 seconds to load in order\nto increase your ad\'s effectiveness.\n\nDo you wish to continue?');
+	         if (conf) document.getElementById('create_fpa').submit();
+	         else document.getElementById('save-ad-clicked').value = '';
+	      } else {
+	         document.getElementById('create_fpa').submit();
+	      }
+	   }
+	}
 	
 	
 	
@@ -121,6 +164,7 @@
 				$(self).submit(function(){
 					$(self).create_variations('clear_errors');
 				});
+				
 				$(self).ajaxForm({
 					clearForm : false,
 					
@@ -130,8 +174,10 @@
 						var $out = $('#uploadOutput');
 		            //$out.html('Form success handler received: <strong>' + typeof data + '</strong>');
 		            data = JSON.parse($(data).text())
-		            console.log(data)
-		            console.log(self.data('variations'))
+		           
+		           
+
+		            
 		            self.data('variations').add(data)
 		           /* if (typeof data == 'object' && data.nodeType)
 		                data = elementToString(data.documentElement, true);
@@ -344,6 +390,7 @@
 				})
 				_.extend(VT.Views.Variations.prototype, ActionTable.RowsView); 
 				
+				self.data('params', params)
 				
 				
 				console.log('init')
@@ -439,13 +486,13 @@
 										}
 									});
 								}
-								//if (response.allow_csv) {
+								if (params.ad_type == 'text') {
 									var import_ads = $(Mustache.to_html($('#import_ads_template').html(), {})).appendTo(bulk_load_area);
 									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Import ads'})).appendTo(bulk_load_options);
 									
 									
 									toggle_load_upload(bulk_option, import_ads);
-							//	}
+								}
 								console.log(response)
 								if (response.length > 0) {
 									var load_ads_section = $(Mustache.to_html($('#load_from_previous_campaigns_template').html(), {})).appendTo(bulk_load_area);

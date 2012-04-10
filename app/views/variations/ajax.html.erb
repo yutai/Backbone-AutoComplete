@@ -178,7 +178,6 @@
 							</th>
 							<td>
 								<input type="text" id="headline" class="grid6 char_count required" name="variation[headline]" maxlength="25" value=""/>
-								<div id="headline_error" class="text_errors variation_errors error_feedback"></div>
 								<div class="input-desc" id="headline_desc"><span class="char_default"></span><span class="char_remaining"></span> characters remaining</div>
 							</td>
 						</tr>
@@ -188,7 +187,6 @@
 							</th>
 							<td>
 								<input type="adtext" id="text" class="grid6 char_count required" name="variation[adtext]" maxlength="70" value=""/>
-								<div id="text_error" class="text_errors variation_errors error_feedback"></div>
 								<div class="input-desc" id="text_desc"><span class="char_default"></span><span class="char_remaining"></span> characters remaining</div>
 							</td>
 						</tr>
@@ -198,7 +196,6 @@
 							</th>
 							<td>
 								<input type="text" id="destination_url" class="grid6 char_count url required"  maxlength="1015" name="variation[destination_url]" value="" /> 
-								<div id="destination_url_error"  class="text_errors variation_errors error_feedback" ></div>
 								<div class="input-desc" id="destination_url_desc"><span class="char_default"></span><span class="char_remaining"></span> characters remaining</div>
 							</td>
 						</tr>
@@ -211,7 +208,6 @@
 									<span id="auto_display_url_text"></span> [<span id="edit_display_url">edit</span>]
 								</div>
 								<div id="manual_display_url"> <input type="text" id="display_url" class="grid6 char_count required" name="variation[display_url]" value="" maxlength="35" /> 
-								<div id="display_url_error"  class="text_errors variation_errors error_feedback" ></div>
 								<div class="input-desc" id="display_url_desc"><span class="char_default"></span><span class="char_remaining"></span> characters remaining</div>
 							</td>
 						</tr>
@@ -250,3 +246,35 @@
     </td>
 </script>
 	
+<!-- FPA variations -->
+<script id="fpa_variations_template" type="text/x-jquery-tmpl">
+<div id="create-ad-input" class="input-fields block_content">
+   <div>
+	<label for="site_name">Company name*</label><input type="text" class="create_ad_inputs grid5" id="site_name" name="site_name" maxlength="40" value="" /></div>
+  
+	<div class="input-desc" id="site_name_desc">maximum 40 characters</div>
+	<div><label for="target_url">Ad URL*</label><input type="text" class="create_ad_inputs grid5 required url" id="target_url" name="target_url" maxlength="1015" value="http://www.google.com/" /></div>
+	<div class="input-desc" id="target_url_desc">maximum 1015 characters</div>
+<div><label for="image_file" class="input_optional">Upload logo</label><input type="file" id="image_file" name="image_file" /></div>
+   <div class="input-desc" id="image_file_desc"><strong>OPTIONAL</strong> max 350px high by 550px wide, 50kb filesize</div>
+   <h3 style="margin-top:2em;  font-size:9pt; text-transform:uppercase;">Message bar details</h3>
+   <div><label for="ad_head" class="input_optional">Headline</label><input type="text"  class="create_ad_inputs grid5" id="ad_head" name="ad_head" maxlength="25" value="" /></div>
+   <div class="input-desc" id="ad_head_desc"><strong>OPTIONAL</strong> maximum 25 characters</div>
+   <div><label for="ad_text" class="input_optional">Text</label><input type="text" class="create_ad_inputs grid5" id="ad_text" name="ad_text" maxlength="50" value="" /></div>
+   <div class="input-desc" id="ad_text_desc"><strong>OPTIONAL</strong> maximum 50 characters</div>
+	<a class="button save_ad" id="save_ad">Save</a>
+</div>
+</script>
+
+
+<!-- FPA variation -->
+
+<script id="fpa_variation_template" type="text/x-jquery-tmpl">
+    <td>
+    	{{id}} - {{url}}<br>
+    	{{destination_url}}
+    </td>
+    <td>
+    	<span class="delete_variation">x</span>
+    </td>
+</script>
