@@ -1,63 +1,72 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>-</title>
-<script type="text/javascript">
-
-window.onunload = function() {unloading();}
-function unloading() {
-   if (to) clearTimeout(to);
-   if (window.opener) ifonload('popout');
-}
-
-var completeReadyStateChanges;
-var url;
-var start;
-var end;
-var duration = 0;
-var to;
-var totalTimer;
-
-window.onload = function() {
-   var ifr = document.getElementById('iframe');
-   ifr.onload = ifonload;
-   ifr.onreadystatechange = ifonreadystatechange;
-   timeit();
-   totalTimer = setTimeout('loaded(1000,false)',15000);
-}
-
-function timeit() {
-   var url = window.opener.document.getElementById('target_url').value;
-   if (!url.match(/^https?:\/\//)) url = 'http://' + url;
-   window.opener.document.getElementById('target_url').value = url;
-   document.getElementById('iframe').src = url;
-   completeReadyStateChanges = 0;
-   start = new Date().getTime();
-}
-
-function ifonload() {
-   end = new Date().getTime();
-   if (duration == 0) duration = end - start;
-   var popout = false;
-   if (arguments[0] && arguments[0] == 'popout') {
-      popout = true;
-      loaded(duration, popout);
-   } else {
-      to = setTimeout('loaded(' + duration + ',' + popout + ')', 1000);
-   }
-}
-
-function ifonreadystatechange() {
-   if (++completeReadyStateChanges==3) ifonload();
-}
-
-function loaded(duration, popout) {
-   if (totalTimer) clearTimeout(totalTimer);
-   window.onunload = ''; 
-   window.opener.checkLoc(duration,popout);
-}
-</script>
+	<script src="/assets/jquery.js?body=1" type="text/javascript"></script>
+	<script src="/assets/jquery.createVariations.js?body=1" type="text/javascript"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<title>-</title>
+	<script type="text/javascript">
+		$(window.opener.document.body).find('#newVariationsForm').create_variations('wink',window)
+		window.onunload = function() {unloading();}
+		function unloading() {
+		   if (to) clearTimeout(to);
+		   if (window.opener) ifonload('popout');
+		}
+		
+		var completeReadyStateChanges;
+		var url;
+		var start;
+		var end;
+		var duration = 0;
+		var to;
+		var totalTimer;
+		
+		window.onload = function() {
+			console.log('onload')
+		   var ifr = document.getElementById('iframe');
+		   ifr.onload = ifonload;
+		   ifr.onreadystatechange = ifonreadystatechange;
+		   timeit();
+		   totalTimer = setTimeout('loaded(1000,false)',15000);
+		}
+		
+		function timeit() {
+			console.log('timeit')
+		   var url = window.opener.document.getElementById('target_url').value;
+		   if (!url.match(/^https?:\/\//)) url = 'http://' + url;
+		   window.opener.document.getElementById('target_url').value = url;
+		   document.getElementById('iframe').src = url;
+		   completeReadyStateChanges = 0;
+		   start = new Date().getTime();
+		}
+		
+		function ifonload() {
+			console.log('ifonload')
+		   end = new Date().getTime();
+		   if (duration == 0) duration = end - start;
+		   var popout = false;
+		   if (arguments[0] && arguments[0] == 'popout') {
+		      popout = true;
+		      loaded(duration, popout);
+		   } else {
+		      to = setTimeout('loaded(' + duration + ',' + popout + ')', 1000);
+		   }
+		}
+		
+		function ifonreadystatechange() {
+		   if (++completeReadyStateChanges==3) ifonload();
+		}
+		
+		function loaded(duration, popout) {
+			console.log('loaded')
+		   if (totalTimer) clearTimeout(totalTimer);
+		   window.onunload = ''; 
+		   //weeeindow.opener.checkLoc(duration,popout);
+		   $(window.opener.document.body).find('#newVariationsForm').create_variations('checkLoc',duration,popout)
+		}
+		
+		
+	</script>
 </head>
 <body>
 <iframe name="iframe" id="iframe" src="about:blank" frameborder="0" height="1" width="1" scrolling="no"></iframe>

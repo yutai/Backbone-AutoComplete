@@ -1,19 +1,28 @@
-
+/*
 var w =   {};
-	function checkURL() {
-		console.log('in checkURL')
-	   if (!w.closed && w.location) {
-	      w.close();
-	   } else {
-	      w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
-	      if (w.opener) w.opener = self;
-	      window.top.focus();
-	   }
-	}
-	$('<input type="button" value="test" />').click(function(){
-		console.log('checkURL is')
-		console.log(checkURL())
-	}).appendTo('body');
+
+function checkURL() {
+	console.log('in checkURL')
+   if (!w.closed && w.location) {
+      w.close();
+   } else {
+      w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
+      //if (!w.opener) w.opener = self;
+      
+      window.top.focus();
+   }
+}
+*/
+
+
+
+
+
+
+
+
+
+
 (function($){
 	/////////////////////////////////////////////
 	// 
@@ -28,32 +37,7 @@ var w =   {};
 		Models : {}
 	};
 	
-	function checkLoc(duration,popout) {
-	   if (!w.closed) {
-	      w.onunload = '';
-	      w.close();
-	      if (popout) {
-	         clearErrorMsgs();
-	         var d1 = document.getElementById('target_url_desc');
-	         var d2 = document.createElement('div');
-	         d2.className = 'input-desc error-background';
-	         d2.innerHTML = 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.';
-	         d1.parentNode.insertBefore(d2,d1);
-	         enableForm();
-	         document.getElementById('save-ad-clicked').value = '';
-	      } else if (parseInt(duration) > 5000) {
-	         enableForm();
-	         var seconds = Math.round(duration/10)/100;
-	         if (seconds >= 15) seconds = seconds + ' seconds or more';
-	         else seconds = seconds + ' seconds';
-	         var conf = confirm('Your ad took ' + seconds + ' to fully load.\nWe recommend that your ad takes no\nlonger than 5 seconds to load in order\nto increase your ad\'s effectiveness.\n\nDo you wish to continue?');
-	         if (conf) document.getElementById('create_fpa').submit();
-	         else document.getElementById('save-ad-clicked').value = '';
-	      } else {
-	         document.getElementById('create_fpa').submit();
-	      }
-	   }
-	}
+	
 	
 	
 	
@@ -131,7 +115,273 @@ var w =   {};
 		},
 		
 		*/
-		
+		init : function(params)
+		{
+			var self = this;
+			return this.each(function(){
+				self.data('w',{})
+				$('<input type="button" value="test" />').click(function(){
+					console.log('checkURL is')
+					self.create_variations('checkURL')
+				}).appendTo('body');
+
+				
+				VT.Models.Variation = Backbone.Model.extend();
+				_.extend(VT.Models.Variation.prototype, ActionTable.Row);
+				
+				VT.Collections.Variations = Backbone.Collection.extend({
+					model : VT.Models.Variation,
+					url : '/banners/' + params.banner_id + '/variations'
+				});
+				
+				_.extend(VT.Collections.Variations.prototype, ActionTable.Rows);
+				
+				VT.Views.Variation = Backbone.View.extend({
+					template : $('#'+ params.ad_type + '_variation_template').html(),
+					rowFunction : function()
+					{
+						var view = this;
+						console.log(view.model)
+						$(view.el).find('span.delete_variation').click(function(){view.model.set('display_url','www.setset.com');view.model.save();});
+					}
+				});
+				_.extend(VT.Views.Variation.prototype, ActionTable.RowView)
+				
+				VT.Views.Variations = Backbone.View.extend({
+					type:'table',
+					RowView : VT.Views.Variation
+				})
+				_.extend(VT.Views.Variations.prototype, ActionTable.RowsView); 
+				
+				self.data('params', params)
+				
+				
+				console.log('init')
+				self.data('banner_id',params.banner_id)
+				$('#variations_ui').remove();		
+				//var add_banner_details = $('#banner_details_template').tmpl(response).appendTo(this);
+				
+				//insert the form based on ad_type
+				
+				$(Mustache.to_html($('#' + params.ad_type + '_variations_template').html(),{banner_id:banner_id})).appendTo(this);
+		/*
+				if (typeof(self.data('variations')) == 'undefined')
+				{
+					console.log('should be defining self data vars')
+					/*self.data({
+						variations : self.create_variations('Variations', params.banner_id),
+						uid : Math.random() * 100
+					});
+				}
+				
+				*/
+				console.log('bink')
+				var collection = new VT.Collections.Variations()
+				console.log(collection)
+				
+				self.data('variations', collection);
+				
+				self.data({
+					variationsView : new VT.Views.Variations({
+							el : $('#variations_table'),
+							collection : collection,
+							template : $('#' + params.ad_type + '_variation_template').html(),
+							statusDiv : params.statusDiv
+					})
+				});
+				self.data('variationsView').numericalSort('id',-1);
+				self.data('variationsView').pager();
+				
+											console.log('werwerwrwers')
+
+				var banner_specs_table = $('#banner_specs table');
+				/*
+				for (var i=0; i < response.ad_sizes.length; i++)
+				{
+					var size_display = $('#ad_size_template').tmpl(response.ad_sizes[i]).appendTo(banner_specs_table);
+				}
+				*/
+				$(this).create_variations('make_form');	
+				
+				$(self).data({ad_type: params.ad_type});
+				switch ($(self).data('ad_type') )
+				{
+					case "text"  : $(self).create_variations('text_init');
+					case "image" : $(self).create_variations('image_init');
+				} 
+				
+				////////////////////////
+				//
+				//  load related campaigns
+				//
+				///////////////////////
+				
+				
+				var bulk_load_area = $('#bulk_load_area');
+				var bulk_load_options = $('#bulk_load_options');
+				var bulk_load_option = $('#bulk_load_option');
+				
+				
+				
+				
+				$.ajax(
+					{
+						url		: "/banners/" + params.banner_id + '/importable_banners.json', 
+						data		: {ad_type: params.ad_type, bid_type : params.bid_type},
+						dataType : 'json',
+						type		: 'GET',
+						success	: function(response)
+						{
+							if (response)
+							{
+								console.log(response)
+								function toggle_load_upload(el, target)
+								{
+									el.click(function(){
+										bulk_load_area.find('.load_upload_sections').hide();
+										if (el.hasClass('import_options_expanded')) 
+										{
+											el.removeClass('import_options_expanded').addClass('import_options_contracted');
+										} else {
+											bulk_load_options.find('.import_options_expanded').removeClass('import_options_expanded').addClass('import_options_contracted');
+											el.removeClass('import_options_contracted').addClass('import_options_expanded');
+											target.slideDown();
+										}
+									});
+								}
+								if (params.ad_type == 'text') {
+									var import_ads = $(Mustache.to_html($('#import_ads_template').html(), {})).appendTo(bulk_load_area);
+									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Import ads'})).appendTo(bulk_load_options);
+									
+									
+									toggle_load_upload(bulk_option, import_ads);
+								}
+								console.log(response)
+								if (response.length > 0) {
+									var load_ads_section = $(Mustache.to_html($('#load_from_previous_campaigns_template').html(), {})).appendTo(bulk_load_area);
+									var load_campaigns = $('#load_campaigns');
+									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Load ads from another campaign'})).appendTo(bulk_load_options);
+									toggle_load_upload(bulk_option,load_ads_section);
+									
+									for (var j=0; j<response.length; j++)
+									{
+										var previous_campaign = $(Mustache.to_html($('#previous_campaign').html(), response[j])).appendTo(load_campaigns);
+									}
+									$('#load-btn').click(function(){
+										$.ajax(
+											{
+												url		: "/banners/"+ load_campaigns.val()+"/variations.json", 
+												dataType : 'json',
+												type		: 'GET',
+												success	: function(vars)
+												{
+													console.log('vars: ')
+													console.log(vars)
+													if (vars)
+													{
+														for (var k=0; k<vars.length; k++)
+														{
+															var variation = new VT.Models.Variation({
+																headline        : vars[k]['headline'],
+																adtext          : vars[k]["adtext"],
+																destination_url : vars[k]["destination_url"],
+																display_url     : vars[k]["display_url"],
+																img_src         : vars[k]["img_src"],
+																fpa_url         : vars[k]["fpa_url"]
+															})
+															//var variation = new VT.Models.Variation(vars[k]);
+															self.data('variations').add(variation);
+														}
+													}
+												},
+												error    : function(response){}
+											}
+										);
+									});
+								}
+								
+								
+							} 
+							else
+							{
+								load_ads_section.remove();
+							}
+						},
+						error    : function(response){}
+					}	
+				);
+				
+				
+				////////////////////////
+				//
+				//  character counter
+				//
+				///////////////////////
+				
+				$('.char_count').each(function(){  
+					var input_field = $(this);
+					var length = input_field.val().length;
+					var maxlength =  input_field.prop('maxlength');
+					$(this).parent().find('.char_remaining').html( (maxlength - length));  
+					$(this).keyup(function(){  
+						var new_length = $(this).val().length;  
+						$(this).parent().find('.char_remaining').html( (maxlength - new_length));  
+					});  
+				});  
+				
+			});
+			console.log('deeeeeee')
+		},
+		checkURL : function () {
+			var self = this;
+			console.log('in checkURL')
+			console.log(self.data())
+			if (self.data('w') && !self.data('w').closed && self.data('w').location) {
+				self.data('w').close();
+			} else {
+				self.data('w',window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no'));
+				//if (!w.opener) w.opener = self;
+				window.top.focus();
+			}
+		},
+		checkLoc :function (duration,popout) {
+			console.log('in checkLoc')
+			var self = this;
+			var w = self.data('w');
+			console.log(self.data())
+			if (!w.closed) {
+				w.onunload = '';
+				//w.close();
+				if (popout) {
+					console.log('shit broke out')
+					clearErrorMsgs();
+					var d1 = document.getElementById('target_url_desc');
+					var d2 = document.createElement('div');
+					d2.className = 'input-desc error-background';
+					d2.innerHTML = 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.';
+					d1.parentNode.insertBefore(d2,d1);
+					enableForm();
+					  
+					document.getElementById('save-ad-clicked').value = '';
+				} else if (parseInt(duration) > 5000) {
+					enableForm();
+					var seconds = Math.round(duration/10)/100;
+					if (seconds >= 15) seconds = seconds + ' seconds or more';
+					else seconds = seconds + ' seconds';
+					var conf = confirm('Your ad took ' + seconds + ' to fully load.\nWe recommend that your ad takes no\nlonger than 5 seconds to load in order\nto increase your ad\'s effectiveness.\n\nDo you wish to continue?');
+					if (conf) document.getElementById('create_fpa').submit();
+					else document.getElementById('save-ad-clicked').value = '';
+				} else {
+					console.log('all good')
+					document.getElementById('create_fpa').submit();
+				}
+			}
+		},
+		wink : function(w)
+		{
+			//w.close();
+			console.log('yea!')
+		},
 		
 		clear_errors : function()
 		{
@@ -356,219 +606,8 @@ var w =   {};
 			return this.each(function(){ 
 				$(self).create_variations('text_set_adpreview_input',true);
 			});
-		},
-		init : function(params)
-		{
-			var self = this;
-			return this.each(function(){
-				
-				
-				VT.Models.Variation = Backbone.Model.extend();
-				_.extend(VT.Models.Variation.prototype, ActionTable.Row);
-				
-				VT.Collections.Variations = Backbone.Collection.extend({
-					model : VT.Models.Variation,
-					url : '/banners/' + params.banner_id + '/variations'
-				});
-				
-				_.extend(VT.Collections.Variations.prototype, ActionTable.Rows);
-				
-				VT.Views.Variation = Backbone.View.extend({
-					template : $('#'+ params.ad_type + '_variation_template').html(),
-					rowFunction : function()
-					{
-						var view = this;
-						console.log(view.model)
-						$(view.el).find('span.delete_variation').click(function(){view.model.set('display_url','www.setset.com');view.model.save();});
-					}
-				});
-				_.extend(VT.Views.Variation.prototype, ActionTable.RowView)
-				
-				VT.Views.Variations = Backbone.View.extend({
-					type:'table',
-					RowView : VT.Views.Variation
-				})
-				_.extend(VT.Views.Variations.prototype, ActionTable.RowsView); 
-				
-				self.data('params', params)
-				
-				
-				console.log('init')
-				self.data('banner_id',params.banner_id)
-				$('#variations_ui').remove();		
-				//var add_banner_details = $('#banner_details_template').tmpl(response).appendTo(this);
-				
-				//insert the form based on ad_type
-				
-				$(Mustache.to_html($('#' + params.ad_type + '_variations_template').html(),{banner_id:banner_id})).appendTo(this);
-		/*
-				if (typeof(self.data('variations')) == 'undefined')
-				{
-					console.log('should be defining self data vars')
-					/*self.data({
-						variations : self.create_variations('Variations', params.banner_id),
-						uid : Math.random() * 100
-					});
-				}
-				
-				*/
-				console.log('bink')
-				var collection = new VT.Collections.Variations()
-				console.log(collection)
-				
-				self.data('variations', collection);
-				
-				self.data({
-					variationsView : new VT.Views.Variations({
-							el : $('#variations_table'),
-							collection : collection,
-							template : $('#' + params.ad_type + '_variation_template').html(),
-							statusDiv : params.statusDiv
-					})
-				});
-				self.data('variationsView').numericalSort('id',-1);
-				self.data('variationsView').pager();
-				
-											console.log('werwerwrwers')
-
-				var banner_specs_table = $('#banner_specs table');
-				/*
-				for (var i=0; i < response.ad_sizes.length; i++)
-				{
-					var size_display = $('#ad_size_template').tmpl(response.ad_sizes[i]).appendTo(banner_specs_table);
-				}
-				*/
-				$(this).create_variations('make_form');	
-				
-				$(self).data({ad_type: params.ad_type});
-				switch ($(self).data('ad_type') )
-				{
-					case "text"  : $(self).create_variations('text_init');
-					case "image" : $(self).create_variations('image_init');
-				} 
-				
-				////////////////////////
-				//
-				//  load related campaigns
-				//
-				///////////////////////
-				
-				
-				var bulk_load_area = $('#bulk_load_area');
-				var bulk_load_options = $('#bulk_load_options');
-				var bulk_load_option = $('#bulk_load_option');
-				
-				
-				
-				
-				$.ajax(
-					{
-						url		: "/banners/" + params.banner_id + '/importable_banners.json', 
-						data		: {ad_type: params.ad_type, bid_type : params.bid_type},
-						dataType : 'json',
-						type		: 'GET',
-						success	: function(response)
-						{
-							if (response)
-							{
-								console.log(response)
-								function toggle_load_upload(el, target)
-								{
-									el.click(function(){
-										bulk_load_area.find('.load_upload_sections').hide();
-										if (el.hasClass('import_options_expanded')) 
-										{
-											el.removeClass('import_options_expanded').addClass('import_options_contracted');
-										} else {
-											bulk_load_options.find('.import_options_expanded').removeClass('import_options_expanded').addClass('import_options_contracted');
-											el.removeClass('import_options_contracted').addClass('import_options_expanded');
-											target.slideDown();
-										}
-									});
-								}
-								if (params.ad_type == 'text') {
-									var import_ads = $(Mustache.to_html($('#import_ads_template').html(), {})).appendTo(bulk_load_area);
-									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Import ads'})).appendTo(bulk_load_options);
-									
-									
-									toggle_load_upload(bulk_option, import_ads);
-								}
-								console.log(response)
-								if (response.length > 0) {
-									var load_ads_section = $(Mustache.to_html($('#load_from_previous_campaigns_template').html(), {})).appendTo(bulk_load_area);
-									var load_campaigns = $('#load_campaigns');
-									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Load ads from another campaign'})).appendTo(bulk_load_options);
-									toggle_load_upload(bulk_option,load_ads_section);
-									
-									for (var j=0; j<response.length; j++)
-									{
-										var previous_campaign = $(Mustache.to_html($('#previous_campaign').html(), response[j])).appendTo(load_campaigns);
-									}
-									$('#load-btn').click(function(){
-										$.ajax(
-											{
-												url		: "/banners/"+ load_campaigns.val()+"/variations.json", 
-												dataType : 'json',
-												type		: 'GET',
-												success	: function(vars)
-												{
-													console.log('vars: ')
-													console.log(vars)
-													if (vars)
-													{
-														for (var k=0; k<vars.length; k++)
-														{
-															var variation = new VT.Models.Variation({
-																headline        : vars[k]['headline'],
-																adtext          : vars[k]["adtext"],
-																destination_url : vars[k]["destination_url"],
-																display_url     : vars[k]["display_url"],
-																img_src         : vars[k]["img_src"],
-																fpa_url         : vars[k]["fpa_url"]
-															})
-															//var variation = new VT.Models.Variation(vars[k]);
-															self.data('variations').add(variation);
-														}
-													}
-												},
-												error    : function(response){}
-											}
-										);
-									});
-								}
-								
-								
-							} 
-							else
-							{
-								load_ads_section.remove();
-							}
-						},
-						error    : function(response){}
-					}	
-				);
-				
-				
-				////////////////////////
-				//
-				//  character counter
-				//
-				///////////////////////
-				
-				$('.char_count').each(function(){  
-					var input_field = $(this);
-					var length = input_field.val().length;
-					var maxlength =  input_field.prop('maxlength');
-					$(this).parent().find('.char_remaining').html( (maxlength - length));  
-					$(this).keyup(function(){  
-						var new_length = $(this).val().length;  
-						$(this).parent().find('.char_remaining').html( (maxlength - new_length));  
-					});  
-				});  
-				
-			});
-			console.log('deeeeeee')
 		}
+		
 	};
 		
 	/////////////////////////////////////////////
