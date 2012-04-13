@@ -11,11 +11,11 @@ $(document).ready(function() {
 var Workspace = Backbone.Router.extend({
 
   routes: {
-    ":banner_id" : "fetch_banner"    
+    "banner/:banner_id" : "fetch_banner"    
   },
 
   fetch_banner: function(banner_id) {
-  	
+  	console.log('in fetch')
   },
   create_ui : function(banner)
   {
