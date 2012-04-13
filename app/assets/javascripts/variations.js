@@ -8,6 +8,31 @@ $(document).ready(function() {
     }
   });
 */  
+var Workspace = Backbone.Router.extend({
+
+  routes: {
+    ":banner_id" : "fetch_banner"    
+  },
+
+  fetch_banner: function(banner_id) {
+  	
+  },
+  create_ui : function(banner)
+  {
+	  	var statusDiv = $('<div></div>');
+		statusDiv.top_of_page_status();
+		
+		var params = 
+		{
+			banner : banner,
+			statusDiv : statusDiv
+		}
+		var varForm = $("#newVariationsForm");
+		var varForm = varForm.create_variations(params).validate();
+		fpa_hack = new FPAHack(varForm);
+  }
+
+});
 
 
 /*
@@ -59,17 +84,6 @@ var variationsTable = new VariationsTable();
 console.log('about to print variations')
 console.log(variationsTable.variations)
 	*/
-	var statusDiv = $('<div></div>');
-	statusDiv.top_of_page_status();
 	
-	var params = 
-	{
-		banner_id : banner_id,
-		ad_type : ad_type,
-		bid_type : bid_type,
-		statusDiv : statusDiv
-	}
-	$("#newVariationsForm").create_variations(params).validate({
-		
-	});
+
 });

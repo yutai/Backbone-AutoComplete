@@ -1,5 +1,13 @@
 BannerSegmentVariation::Application.routes.draw do
   
+  get "ui/create_variations"
+
+  get "ui/otex"
+
+  get "ui/initalize_banner"
+
+  get "ui/banner_details"
+
   resources :source_segments
 
   match "/banners/:banner_id/otex" => "segments#otex"

@@ -6,6 +6,7 @@ class CreateVariations < ActiveRecord::Migration
       t.string :adtext
       t.string :destination_url
       t.string :display_url
+      t.string :site_name
       t.string :img_src
       t.string :fpa_url
 

@@ -1,12 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<script src="/assets/jquery.js?body=1" type="text/javascript"></script>
+	<!-- <script src="/assets/backbone.js?body=1" type="text/javascript"></script>
+	
 	<script src="/assets/jquery.createVariations.js?body=1" type="text/javascript"></script>
+	-->
+	<script src="/assets/jquery.js?body=1" type="text/javascript"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<title>-</title>
 	<script type="text/javascript">
-		$(window.opener.document.body).find('#newVariationsForm').create_variations('wink',window)
+	//$(window.opener.document.body).find('#newVariationsForm').create_variations();
+		//$(window.opener.document.body).find('#newVariationsForm').create_variations('wink',window)
+		
+		console.log(window.opener.fpa_hack)
 		window.onunload = function() {unloading();}
 		function unloading() {
 		   if (to) clearTimeout(to);
@@ -59,10 +65,12 @@
 		
 		function loaded(duration, popout) {
 			console.log('loaded')
+			console.log($(window.opener.document.body).find('#newVariationsForm').data())
 		   if (totalTimer) clearTimeout(totalTimer);
 		   window.onunload = ''; 
+		   
 		   //weeeindow.opener.checkLoc(duration,popout);
-		   $(window.opener.document.body).find('#newVariationsForm').create_variations('checkLoc',duration,popout)
+		   //$(window.opener.document.body).find('#newVariationsForm').create_variations('checkLoc',duration,popout)
 		}
 		
 		

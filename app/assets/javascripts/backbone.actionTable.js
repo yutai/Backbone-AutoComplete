@@ -407,6 +407,7 @@ ActionTable.RowsView = {
 		_.bindAll(this,'render','appendItem','appendItem2','addToCollection');
 		this.collection.bind('add',this.addToCollection);
 		this.collection.bind('change',this.render);
+		this.collection.bind('destroy',this.render)
 		this.collection.bind('reset',this.render);
 		this.collection.bind('sort',this.sort);
 		this.container_type = $(this.el).prop('tagName').toLowerCase();
@@ -650,7 +651,7 @@ ActionTable.RowView = {
 	initialize : function()
 	{
 		_.bindAll(this,'render','unrender','remove');
-		this.bind('remove',this.unrender);
+		//this.model.bind('destroy',this.unrender)
 		this.model.bind('save', this.render)
 		
 	},
@@ -668,14 +669,12 @@ ActionTable.RowView = {
 	},
 	unrender: function()
 	{
+		console.log('RowView Unrender')
 		var el = $(this.el);
 		el.fadeOut('fast', function(){
 			el.remove()
 		});
-	},
-	remove: function()
-	{
-		this.model.destroy();
 	}
+	
 };
 

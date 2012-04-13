@@ -1,19 +1,71 @@
-/*
-var w =   {};
+///////////////////////////////////////////////////////////////
+//
+//  This hack was design to test if the FPA breaks frame
+//  It needs to open a new window to do so.
+//  In order for it to work, the for must use the name 'variation[destination_url]' and 
+//  id of 'destination_url' for the relevant input 
+//
+///////////////////////////////////////////////////////////////
 
-function checkURL() {
-	console.log('in checkURL')
-   if (!w.closed && w.location) {
-      w.close();
-   } else {
-      w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
-      //if (!w.opener) w.opener = self;
-      
-      window.top.focus();
-   }
-}
-*/
+var FPAHack = function (varForm){
+	this.w = '';
+	this.checkURL = function () {
+	   if (!this.w.closed && this.w.location) {
+	      this.w.close();
+	   } else {
+	      this.w = window.open('/pop_test2.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
+	      this.w.opener = self;
+	      window.top.focus();
+	   }
+	};
+	this.enableForm = function(){
+		console.log('in enable form')
+		$(varForm.currentForm).find('input').removeProp('disabled')
+	};
+	
+	this.checkLoc = function (duration,popout) {
+		w = this.w;
+		console.log(varForm)
+		
+		this.enableForm();
+	   if (!w.closed) {
+	      w.onunload = '';
+	      w.close();
+	      
+	      if (popout) {
+	         console.log('popout')
+				varForm.showErrors({"variation[destination_url]" : 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.'});
+	         console.log($(varForm.currentForm).find('input'))
+	         document.getElementById('save-ad-clicked').value = '';
+	      } else if (parseInt(duration) > 5000) {
+	         console.log('in long duration')
+	         var seconds = Math.round(duration/10)/100;
+	         if (seconds >= 15) seconds = seconds + ' seconds or more';
+	         else seconds = seconds + ' seconds';
+	         var conf = confirm('Your ad took ' + seconds + ' to fully load.\nWe recommend that your ad takes no\nlonger than 5 seconds to load in order\nto increase your ad\'s effectiveness.\n\nDo you wish to continue?');
+	        if (conf) $(varForm.currentForm).submit();
+	         
+//	         else document.getElementById('save-ad-clicked').value = '';
+	      } else {
+	         console.log('all good')
+	         $(varForm.currentForm).submit();
+	      }
+	   }
+	};
+	
+	this.ensure_close = function()
+	{
+		window.onunload = function() {
+			if (!fpa_hack.w.closed && fpa_hack.w.location) {
+				this.w.close();
+			}	
+		};
+	}
+	
+};
 
+
+var fpa_hack = {};
 
 
 
@@ -119,12 +171,13 @@ function checkURL() {
 		{
 			var self = this;
 			return this.each(function(){
-				self.data('w',{})
 				$('<input type="button" value="test" />').click(function(){
 					console.log('checkURL is')
-					self.create_variations('checkURL')
+					$(self).find('input').prop('disabled','disabled')
+					fpa_hack.checkURL();
 				}).appendTo('body');
-
+				
+				
 				
 				VT.Models.Variation = Backbone.Model.extend();
 				_.extend(VT.Models.Variation.prototype, ActionTable.Row);
@@ -142,7 +195,7 @@ function checkURL() {
 					{
 						var view = this;
 						console.log(view.model)
-						$(view.el).find('span.delete_variation').click(function(){view.model.set('display_url','www.setset.com');view.model.save();});
+						$(view.el).find('span.delete_variation').click(function(){view.model.destroy();});
 					}
 				});
 				_.extend(VT.Views.Variation.prototype, ActionTable.RowView)
@@ -332,14 +385,15 @@ function checkURL() {
 			});
 			console.log('deeeeeee')
 		},
+		/*
 		checkURL : function () {
 			var self = this;
 			console.log('in checkURL')
 			console.log(self.data())
-			if (self.data('w') && !self.data('w').closed && self.data('w').location) {
-				self.data('w').close();
+			if (fpa_hack.w && !fpa_hack.w.closed && fpa_hack.w.location) {
+				fpa_hack.w.close();
 			} else {
-				self.data('w',window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no'));
+				fpa_hack.w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
 				//if (!w.opener) w.opener = self;
 				window.top.focus();
 			}
@@ -347,9 +401,9 @@ function checkURL() {
 		checkLoc :function (duration,popout) {
 			console.log('in checkLoc')
 			var self = this;
-			var w = self.data('w');
+			var w = fpa_hack.w;
 			console.log(self.data())
-			if (!w.closed) {
+			if (w && !w.closed) {
 				w.onunload = '';
 				//w.close();
 				if (popout) {
@@ -373,10 +427,11 @@ function checkURL() {
 					else document.getElementById('save-ad-clicked').value = '';
 				} else {
 					console.log('all good')
-					document.getElementById('create_fpa').submit();
+					//document.getElementById('create_fpa').submit();
 				}
 			}
 		},
+		*/
 		wink : function(w)
 		{
 			//w.close();
