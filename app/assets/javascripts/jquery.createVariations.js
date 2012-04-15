@@ -33,10 +33,10 @@ var FPAHack = function (varForm){
 	      w.close();
 	      
 	      if (popout) {
-	         console.log('popout')
-				varForm.showErrors({"variation[destination_url]" : 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.'});
-	         console.log($(varForm.currentForm).find('input'))
-	         document.getElementById('save-ad-clicked').value = '';
+	        console.log('popout')
+			varForm.showErrors({"variation[destination_url]" : 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.'});
+	        console.log($(varForm.currentForm).find('input'))
+	        document.getElementById('save-ad-clicked').value = '';
 	      } else if (parseInt(duration) > 5000) {
 	         console.log('in long duration')
 	         var seconds = Math.round(duration/10)/100;
@@ -64,8 +64,8 @@ var FPAHack = function (varForm){
 	
 };
 
-
 var fpa_hack = {};
+
 
 
 
@@ -167,30 +167,27 @@ var fpa_hack = {};
 		},
 		
 		*/
+		
+		
 		init : function(params)
 		{
 			var self = this;
 			return this.each(function(){
-				$('<input type="button" value="test" />').click(function(){
-					console.log('checkURL is')
-					$(self).find('input').prop('disabled','disabled')
-					fpa_hack.checkURL();
-				}).appendTo('body');
 				
-				
+				$(self).prop('action','/banners/'+params.banner.id+'/variations.json')
 				
 				VT.Models.Variation = Backbone.Model.extend();
 				_.extend(VT.Models.Variation.prototype, ActionTable.Row);
 				
 				VT.Collections.Variations = Backbone.Collection.extend({
 					model : VT.Models.Variation,
-					url : '/banners/' + params.banner_id + '/variations'
+					url : '/banners/' + params.banner.id + '/variations'
 				});
 				
 				_.extend(VT.Collections.Variations.prototype, ActionTable.Rows);
 				
 				VT.Views.Variation = Backbone.View.extend({
-					template : $('#'+ params.ad_type + '_variation_template').html(),
+					template : $('#'+ params.banner.ad_type + '_variation_template').html(),
 					rowFunction : function()
 					{
 						var view = this;
@@ -210,13 +207,13 @@ var fpa_hack = {};
 				
 				
 				console.log('init')
-				self.data('banner_id',params.banner_id)
+				self.data('banner_id',params.banner.id)
 				$('#variations_ui').remove();		
 				//var add_banner_details = $('#banner_details_template').tmpl(response).appendTo(this);
 				
 				//insert the form based on ad_type
 				
-				$(Mustache.to_html($('#' + params.ad_type + '_variations_template').html(),{banner_id:banner_id})).appendTo(this);
+				$(Mustache.to_html($('#' + params.banner.ad_type + '_variations_template').html(),{banner_id:params.banner.id})).appendTo(this);
 		/*
 				if (typeof(self.data('variations')) == 'undefined')
 				{
@@ -233,19 +230,20 @@ var fpa_hack = {};
 				console.log(collection)
 				
 				self.data('variations', collection);
-				
+				var variationTable = $('#variations_table');
+				variationTable.empty();
 				self.data({
 					variationsView : new VT.Views.Variations({
-							el : $('#variations_table'),
+							el : variationTable,
 							collection : collection,
-							template : $('#' + params.ad_type + '_variation_template').html(),
+							template : $('#' + params.banner.ad_type + '_variation_template').html(),
 							statusDiv : params.statusDiv
 					})
 				});
 				self.data('variationsView').numericalSort('id',-1);
 				self.data('variationsView').pager();
 				
-											console.log('werwerwrwers')
+				console.log('werwerwrwers')
 
 				var banner_specs_table = $('#banner_specs table');
 				/*
@@ -256,7 +254,7 @@ var fpa_hack = {};
 				*/
 				$(this).create_variations('make_form');	
 				
-				$(self).data({ad_type: params.ad_type});
+				$(self).data({ad_type: params.banner.ad_type});
 				switch ($(self).data('ad_type') )
 				{
 					case "text"  : $(self).create_variations('text_init');
@@ -270,8 +268,8 @@ var fpa_hack = {};
 				///////////////////////
 				
 				
-				var bulk_load_area = $('#bulk_load_area');
-				var bulk_load_options = $('#bulk_load_options');
+				var bulk_load_area = $('#bulk_load_area').empty();
+				var bulk_load_options = $('<ul id="bulk_load_options"></ul>').appendTo(bulk_load_area);
 				var bulk_load_option = $('#bulk_load_option');
 				
 				
@@ -279,8 +277,8 @@ var fpa_hack = {};
 				
 				$.ajax(
 					{
-						url		: "/banners/" + params.banner_id + '/importable_banners.json', 
-						data		: {ad_type: params.ad_type, bid_type : params.bid_type},
+						url		: "/banners/" + params.banner.id + '/importable_banners.json', 
+						data		: {ad_type: params.banner.ad_type, bid_type : params.banner.bid_type},
 						dataType : 'json',
 						type		: 'GET',
 						success	: function(response)
@@ -302,7 +300,7 @@ var fpa_hack = {};
 										}
 									});
 								}
-								if (params.ad_type == 'text') {
+								if (params.banner.ad_type == 'text') {
 									var import_ads = $(Mustache.to_html($('#import_ads_template').html(), {})).appendTo(bulk_load_area);
 									var bulk_option = $(Mustache.to_html($('#bulk_load_option').html(), {name : 'Import ads'})).appendTo(bulk_load_options);
 									
@@ -451,10 +449,20 @@ var fpa_hack = {};
 			
 			var self = this;
 			$('#save_ad').click(function(){
+				console.log('clicked')
 				if($(self).valid())
 				{
-					console.log(self)
-					$(self).submit();
+					if(self.data('params')['banner']['ad_type'] == 'fpa')
+					{
+						console.log('triggered fpa hack saving process')
+						console.log(fpa_hack)
+						$(self).find('input').prop('disabled','disabled')
+						fpa_hack.checkURL();
+					}
+					else
+					{
+						$(self).submit();
+					}
 				}
 			});
 			$(self).find('.variations_input').keyup(function(){
@@ -478,6 +486,7 @@ var fpa_hack = {};
 						//console.log(responseText)
 						var $out = $('#uploadOutput');
 		            //$out.html('Form success handler received: <strong>' + typeof data + '</strong>');
+		            console.log(data)
 		            data = JSON.parse($(data).text())
 		           
 		           

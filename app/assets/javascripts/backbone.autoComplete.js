@@ -386,6 +386,7 @@ function AutoComplete(params){
 		{
 			this.model.destroy();
 			this.remove();
+			return false;
 		},
 		render: function()
 		{

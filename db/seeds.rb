@@ -49,3 +49,31 @@ Banner.create(
 {:ad_type => 'image', :bid_type => 'cpc',  :name => 'image cpc banner 48'},
   ]
 )
+
+Variation.create(
+[
+  {:banner_id => 3, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 4, :site_name => 'A company', :destination_url => 'http://www.streetwars.net', :adtext => 'play a game', :headline => 'StreetWars'},
+{:banner_id => 3, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 4, :site_name => 'A company', :destination_url => 'http://www.streetwars.net', :adtext => 'play a game', :headline => 'StreetWars'},
+{:banner_id => 3, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 3, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline2', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 7, :headline => 'This is a headline3', :adtext => 'Know more about the ad', :destination_url => 'http://www.dink.com', :display_url => 'www.dink.com'},
+  {:banner_id => 4, :site_name => 'A company', :destination_url => 'http://www.streetwars.net', :adtext => 'play a game', :headline => 'StreetWars'}
+
+
+]
+)

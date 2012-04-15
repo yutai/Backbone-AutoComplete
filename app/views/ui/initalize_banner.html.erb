@@ -1,2 +1,11 @@
-<h1>Ui#initalize_banner</h1>
-<p>Find me in app/views/ui/initalize_banner.html.erb</p>
+<h1>Banner options</h1>
+<%= render "banner_details" %>
+
+<a class="button save_ad" id="save_banner">Save</a>
+<%= javascript_include_tag "backbone.autoComplete","backbone.actionTable","jquery.topPageStatus","jquery.form","jquery.validate.min","jquery.createVariations","initialize_banner.js" %>
+<h1>Segments</h1>
+<%= render "otex" %>
+<h1>Variations</h1>
+<%= render "variations" %>
+
+

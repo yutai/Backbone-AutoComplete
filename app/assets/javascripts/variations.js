@@ -9,31 +9,44 @@ $(document).ready(function() {
   });
 */  
 var Workspace = Backbone.Router.extend({
-
-  routes: {
-    "banner/:banner_id" : "fetch_banner"    
-  },
-
-  fetch_banner: function(banner_id) {
-  	console.log('in fetch')
-  },
-  create_ui : function(banner)
-  {
-	  	var statusDiv = $('<div></div>');
+	routes: {
+		"banners/:banner_id" : "fetch_banner"    
+	},
+	fetch_banner: function(banner_id) {
+		console.log('in fetch ' + banner_id)
+		var self = this;
+		$.ajax({
+			url		: "/banners/" + banner_id, 
+			dataType : 'json',
+			type		: 'GET',
+			success	: function(banner)
+			{
+				self.create_ui(banner)
+			}
+		});
+	},
+	create_ui : function(banner)
+	{
+		console.log('in createUI')
+		varForm = $("#newVariationsForm");
+		varForm.html('');
+		var statusDiv = $('<div></div>');
 		statusDiv.top_of_page_status();
-		
 		var params = 
 		{
 			banner : banner,
 			statusDiv : statusDiv
 		}
-		var varForm = $("#newVariationsForm");
-		var varForm = varForm.create_variations(params).validate();
+		varForm = varForm.create_variations(params).validate();
 		fpa_hack = new FPAHack(varForm);
-  }
-
+	}
 });
 
+var varForm = {};
+
+
+new Workspace;
+Backbone.history.start()
 
 /*
 var VariationsTable = function(){

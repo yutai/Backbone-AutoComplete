@@ -29,48 +29,55 @@ $(document).ready(function() {
  * 
  */
 	
-	
-	
-	var autoCompleteParams1 = 
-	{
-		selector :
+	var Workspace = Backbone.Router.extend({
+		routes: {
+			"banners/:banner_id" : "create_ui"    
+		},
+		create_ui : function(banner_id)
 		{
-			url : '/source_segments',
-			size : 10
-		},
-		holder :
-		{ 
-			url : '/banners/' + banner_id + '/segments'
-		},
-		el : $('#autoComplete1'),
-		input_min_size : 1,
-		maxitems : 10000,
-		delay : 5,
-		bucket : 'contextual'
-		  
-	}
+			console.log('in createUI')
+			var buckets = 
+			[
+				{
+					name : "contextual",
+					el   : $('#autoComplete1')
+				},
+				{
+					name : "geographical",
+					el   : $('#autoComplete2')
+				}
+			]
+			for (var b=0; b< buckets.length; b++)
+			{
+				buckets[b]["el"].empty();
+				var autoCompleteParams = 
+				{
+					selector :
+					{
+						url : '/source_segments',
+						size : 10
+					},
+					holder :
+					{ 
+						url : '/banners/' + banner_id + '/segments'
+					},
+					el : buckets[b]["el"],
+					input_min_size : 1,
+					maxitems : 10000,
+					delay : 5,
+					bucket : buckets[b]["name"]
+				}
+				new AutoComplete(autoCompleteParams);
+			}
+			
+		}
+	});
 	
-	var autoComplete1 = new AutoComplete(autoCompleteParams1);
+
 	
-	var autoCompleteParams2 = 
-	{
-		selector :
-		{
-			url : '/source_segments',
-			size : 10
-		},
-		holder :
-		{ 
-			url : '/banners/' + banner_id + '/segments'
-		},
-		el : $('#autoComplete2'),
-		input_min_size : 1,
-		maxitems : 10000,
-		delay : 5,
-		bucket : 'geographical'
-		  
-	}
 	
-	var autoComplete2 = new AutoComplete(autoCompleteParams2);
+	new Workspace;
+	Backbone.history.start()	
+	
 	
 });

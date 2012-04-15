@@ -119,7 +119,7 @@ ActionTable.Header = function()
 		},
 		render: function(){
 			var thisView = this;
-			$(this.el).html('');
+			$(this.el).empty();
 			_(this.collection.models).each(function(header){
 				this.appendItem(header);
 			}, this)
@@ -173,7 +173,7 @@ ActionTable.Header = function()
 		render: function()
 		{
 			var el = $(this.el);
-			el.html('');
+			el.empty();
 			if(this.model.get('classname')) el.addClass(this.model.get('classname'))
 			if(this.model.get('sort')) {
 				el.addClass('action_table_sortable');
@@ -219,9 +219,10 @@ ActionTable.Paginate = function(){
 	self.pagesView = {};
 	self.init = function(el,targetView)
 	{
+		$(el).empty();
 		if (!this.paginate_area) this.paginate_area = $('<div class="action_table_tool pagination" ></div>').appendTo(el);
 		if (!this.paginate_ul) this.paginate_ul = $('<ul class="paginate_ul"></ul>').appendTo(this.paginate_area);
-
+		
 		self.pages = new self.Pages([]);
 		self.pagesView = new self.PagesView(
 			{
@@ -283,7 +284,7 @@ ActionTable.Paginate = function(){
 		},
 		render: function(){
 			var thisView = this;
-			$(this.el).html('');
+			$(this.el).empty();
 			_(this.collection.models).each(function(page){
 				this.appendItem(page);
 			}, this)
@@ -291,10 +292,10 @@ ActionTable.Paginate = function(){
 			if(this.collection.models.length > 1) 
 			{
 				$('<li><a href="#">Prev</a></li>').click(function(){
-					if (target_info.page != 1) thisView.options.targetView.goTo(target_info.page - 1)
+					if (target_info.page != 1) thisView.options.targetView.goTo(target_info.page - 1);return false;
 				}).prependTo($(this.el));
 				$('<li><a href="#">Next</a></li>').click(function(){
-					if (target_info.page != target_info.lastPage) thisView.options.targetView.goTo(target_info.page + 1)
+					if (target_info.page != target_info.lastPage) thisView.options.targetView.goTo(target_info.page + 1);return false;
 				}).appendTo($(this.el));
 			}
 			
@@ -329,11 +330,12 @@ ActionTable.Paginate = function(){
 		toggle_selection : function(e)
 		{
 			this.model.attributes.action(this.model.attributes.name);
+			return false;
 		},
 		render: function()
 		{
 			var el = $(this.el);
-			el.html('');
+			el.empty();
 			var target_info = this.options.targetView.info();
 			if (target_info.totalPages > 10) {
 				var index = _.indexOf(this.model.collection.models,this.model) + 1;
@@ -442,7 +444,7 @@ ActionTable.RowsView = {
 	},
 	update: function()
 	{
-		this.container.html(''); 
+		this.container.empty(); 
 		_(this.models).each(function(row){
 			row.change();
 		})
@@ -494,7 +496,7 @@ ActionTable.RowsView = {
 	paginator_ui : null,
 	render: function(page){
 		console.log('in RowsView render')
-		this.container.html('');
+		this.container.empty();
 		this.resetFilteredRows();
 		if(typeof(page) == 'number') {
 			this.cParams.page = page;
@@ -508,6 +510,7 @@ ActionTable.RowsView = {
 			this.paginator_ui.update(this.info());
 		} 
 		this.container.find("tr:odd").css("background-color", "#f5f5f5");
+		
 	},
 	
 	cParams : {
@@ -524,6 +527,7 @@ ActionTable.RowsView = {
 	goTo : function (page) {
 		this.cParams.page = parseInt(page,10);
 		this.render();
+		
 	},
 	goToFirstPage : function()
 	{
@@ -662,7 +666,7 @@ ActionTable.RowView = {
 	{
 		console.log('RowView render')
 		var el = $(this.el);
-		el.html('');
+		el.empty();
 		var tr = $(Mustache.to_html(this.template, this.model.toJSON())).appendTo(this.el);
 		if(this.rowFunction) { this.rowFunction();}
 		return this
