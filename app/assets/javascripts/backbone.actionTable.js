@@ -285,23 +285,25 @@ ActionTable.Paginate = function(){
 		render: function(){
 			var thisView = this;
 			$(this.el).empty();
-			_(this.collection.models).each(function(page){
-				this.appendItem(page);
-			}, this)
-			var target_info = this.options.targetView.info();
-			if(this.collection.models.length > 1) 
+			if(this.collection.length > 1) 
 			{
-				$('<li><a href="#">Prev</a></li>').click(function(){
-					if (target_info.page != 1) thisView.options.targetView.goTo(target_info.page - 1);return false;
-				}).prependTo($(this.el));
-				$('<li><a href="#">Next</a></li>').click(function(){
-					if (target_info.page != target_info.lastPage) thisView.options.targetView.goTo(target_info.page + 1);return false;
-				}).appendTo($(this.el));
+				_(this.collection.models).each(function(page){
+					this.appendItem(page);
+				}, this)
+				var target_info = this.options.targetView.info();
+				if(this.collection.models.length > 1) 
+				{
+					$('<li><a href="#">Prev</a></li>').click(function(){
+						if (target_info.page != 1) thisView.options.targetView.goTo(target_info.page - 1);return false;
+					}).prependTo($(this.el));
+					$('<li><a href="#">Next</a></li>').click(function(){
+						if (target_info.page != target_info.lastPage) thisView.options.targetView.goTo(target_info.page + 1);return false;
+					}).appendTo($(this.el));
+				}
+				
+				if(target_info.page < target_info.totalPages - 6 )  $('<li class="disabled"><a href="#">...</a></li>').insertBefore($(this.el).find('li.last_page'))
+				if(target_info.page > 5 )  $('<li class="disabled"><a href="#">...</a></li>').insertAfter($(this.el).find('li.first_page'))
 			}
-			
-			if(target_info.page < target_info.totalPages - 6 )  $('<li class="disabled"><a href="#">...</a></li>').insertBefore($(this.el).find('li.last_page'))
-			if(target_info.page > 5 )  $('<li class="disabled"><a href="#">...</a></li>').insertAfter($(this.el).find('li.first_page'))
-			
 		},
 		appendItem : function(page)
 		{

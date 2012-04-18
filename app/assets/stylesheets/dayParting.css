@@ -1,0 +1,17 @@
+.day_parting_day
+{
+	padding : 4px 10px;
+	cursor : pointer;
+}
+table.day_parting_table 
+{
+	border : 0;
+	border-collapse : collapse; 
+	-moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit browsers */
+}
+table.day_parting_table th, table.day_parting_table td 
+{
+	margin : 0;
+	padding : 0;
+}

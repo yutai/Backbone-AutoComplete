@@ -21,18 +21,29 @@ var Workspace = Backbone.Router.extend({
 	},
 	create_ui : function(banner)
 	{
+		this.statusDiv = $('<div></div>');
+		this.statusDiv.top_of_page_status();
 		this.create_banner_details_ui(banner)
 		this.create_variations_ui(banner)
 		this.create_segments_ui(banner.id)
+		this.create_day_parting_ui(banner)
+	},
+	create_day_parting_ui : function(banner)
+	{
+		$('#day_parting_details').day_parting('init', banner);
 	},
 	create_banner_details_ui : function(banner)
 	{
+		var self = this;
 		var banner_details = $('#banner_details');
 		var save_button = $('#save_banner');
+		var bannerName = $('input#bannerName').val(banner.name);
+		var bannerBid = $('input#bannerBid').val(banner.max_bid);
+		var bannerDailyBudget = $('input#bannerDailyBudget').val(banner.daily_budget);
 		banner_details.prop('action','/banners/'+banner.id+'.json');
-		banner_details.ajaxForm().validate();
+		banner_details.ajaxForm({success:function(){self.statusDiv.top_of_page_status('clear');self.statusDiv.top_of_page_status('success','Banner saved.');console.log('success')}}).validate();
 		save_button.click(function(){
-			console.log('clicked');
+			self.statusDiv.top_of_page_status('loading','Saving...');
 			banner_details.submit()
 		});
 	},
@@ -41,12 +52,11 @@ var Workspace = Backbone.Router.extend({
 		
 		varForm = $("#newVariationsForm");
 		varForm.html('');
-		var statusDiv = $('<div></div>');
-		statusDiv.top_of_page_status();
+		
 		var params = 
 		{
 			banner : banner,
-			statusDiv : statusDiv
+			statusDiv : this.statusDiv
 		}
 		varForm = varForm.create_variations(params).validate();
 		fpa_hack = new FPAHack(varForm);

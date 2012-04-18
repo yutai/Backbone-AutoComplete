@@ -383,58 +383,6 @@ var fpa_hack = {};
 			});
 			console.log('deeeeeee')
 		},
-		/*
-		checkURL : function () {
-			var self = this;
-			console.log('in checkURL')
-			console.log(self.data())
-			if (fpa_hack.w && !fpa_hack.w.closed && fpa_hack.w.location) {
-				fpa_hack.w.close();
-			} else {
-				fpa_hack.w = window.open('/pop_test.html','w','height=1,width=1,location=no,resizeble=yes,scrollbars=no,status=no,titlebar=no');
-				//if (!w.opener) w.opener = self;
-				window.top.focus();
-			}
-		},
-		checkLoc :function (duration,popout) {
-			console.log('in checkLoc')
-			var self = this;
-			var w = fpa_hack.w;
-			console.log(self.data())
-			if (w && !w.closed) {
-				w.onunload = '';
-				//w.close();
-				if (popout) {
-					console.log('shit broke out')
-					clearErrorMsgs();
-					var d1 = document.getElementById('target_url_desc');
-					var d2 = document.createElement('div');
-					d2.className = 'input-desc error-background';
-					d2.innerHTML = 'This URL "breaks out" of the iframe. Please <a href="#" onclick="showIframePopup();return false;" style="color:#00F;">fix the webpage</a> or enter a different URL.';
-					d1.parentNode.insertBefore(d2,d1);
-					enableForm();
-					  
-					document.getElementById('save-ad-clicked').value = '';
-				} else if (parseInt(duration) > 5000) {
-					enableForm();
-					var seconds = Math.round(duration/10)/100;
-					if (seconds >= 15) seconds = seconds + ' seconds or more';
-					else seconds = seconds + ' seconds';
-					var conf = confirm('Your ad took ' + seconds + ' to fully load.\nWe recommend that your ad takes no\nlonger than 5 seconds to load in order\nto increase your ad\'s effectiveness.\n\nDo you wish to continue?');
-					if (conf) document.getElementById('create_fpa').submit();
-					else document.getElementById('save-ad-clicked').value = '';
-				} else {
-					console.log('all good')
-					//document.getElementById('create_fpa').submit();
-				}
-			}
-		},
-		*/
-		wink : function(w)
-		{
-			//w.close();
-			console.log('yea!')
-		},
 		
 		clear_errors : function()
 		{
@@ -449,13 +397,13 @@ var fpa_hack = {};
 			
 			var self = this;
 			$('#save_ad').click(function(){
-				console.log('clicked')
+				
 				if($(self).valid())
 				{
+					self.data('params')['statusDiv'].top_of_page_status('loading','Saving variation...')
+
 					if(self.data('params')['banner']['ad_type'] == 'fpa')
 					{
-						console.log('triggered fpa hack saving process')
-						console.log(fpa_hack)
 						$(self).find('input').prop('disabled','disabled')
 						fpa_hack.checkURL();
 					}
@@ -491,7 +439,7 @@ var fpa_hack = {};
 		           
 		           
 
-		            
+		            self.data('params')['statusDiv'].top_of_page_status('success','Variation saved')
 		            self.data('variations').add(data)
 		           /* if (typeof data == 'object' && data.nodeType)
 		                data = elementToString(data.documentElement, true);

@@ -1,0 +1,23 @@
+.top_of_page_status
+	{
+		position: fixed;
+		z-index: 3006;
+		top : 0;
+		left:50%;
+		
+	}
+	.top_of_page_status .message
+	{
+		position: relative;
+		left : -50%;
+		font-size : 125%;
+		font-weight : normal;
+		color : #000;
+		-webkit-border-radius: 0 0 4px 4px;
+		-moz-border-radius:  0 0 4px 4px;
+		border-radius:  0 0 4px 4px  ;
+		-moz-box-shadow: 2px 2px 3px #888;
+		-webkit-box-shadow: 2px 2px 3px #888;
+		box-shadow: 2px 2px 3px #888;
+		border-top:0;
+	}
