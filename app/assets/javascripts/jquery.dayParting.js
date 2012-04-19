@@ -187,7 +187,8 @@
 				},
 				render: function()
 				{
-					var tr = $(Mustache.to_html($("#day_parting_day_tmpl").html(),{day: args.model.attributes.day})).appendTo(this.el);
+					
+					var tr = $(Mustache.to_html($("#day_parting_day_tmpl").html(),{day: args.model.get('name')})).appendTo(this.el);
 					var hours = $(self).day_parting('hoursview',{							
 						el : tr,
 						collection : this.model.hours
