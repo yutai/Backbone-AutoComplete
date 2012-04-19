@@ -2,16 +2,22 @@
 {
 	padding : 4px 10px;
 	cursor : pointer;
+	display : block;
 }
 table.day_parting_table 
 {
 	border : 0;
 	border-collapse : collapse; 
 	-moz-user-select: none; /* mozilla browsers */
-  -khtml-user-select: none; /* webkit browsers */
+	-khtml-user-select: none; /* webkit browsers */
+	-webkit-user-select: none;
 }
 table.day_parting_table th, table.day_parting_table td 
 {
 	margin : 0;
 	padding : 0;
+}
+.day_parting_on 
+{
+	background :#B2CB6D
 }

@@ -6,40 +6,67 @@
 			var self = this;
 			return this.each(function(){
 				//self.data('selected_dayhours', selected_dayhours);
-				self.data(
-					'days',
-					[
-						{ id : 0, name : "Sun" },
-						{ id : 1, name : "Mon" },
-						{ id : 2, name : "Tues"},
-						{ id : 3, name : "Wed"},
-						{ id : 4, name : "Thur"}, 
-						{ id : 5, name : "Fri"}, 
-						{ id : 6, name :"Sat"}
-					]
-				);
-				var day_parting_table = $(Mustache.to_html($('#day_parting_tmpl').html(),banner)).appendTo($(self));
-				self.data('dayhours',{days : []});
-				self.data('days_collection', self.day_parting('days',(self.data('days'))));
-				self.data(
-					'day_parting_details_view', 
-					$(self).day_parting(
-						'daysview',
+				self.data('sourceHours',[])
+				$.ajax({
+					url		: "/ui/mock_dayparting_segments_api.json", 
+					dataType : 'json',
+					type		: 'GET',
+					success	: function(sourceHours)
+					{
+						
+						function sortfunc(a,b)
 						{
-							el : $('#day_parting_table'),
-							collection : self.data('days_collection')
+						return a.nodeId - b.nodeId;
 						}
-					)
-				);
-				
-				$('#testhi').click(function(){
-					//$(self).data('days_collection').models[0].subitems.models[0].set({"selected":true});
-					console.log(self.data('days_collection'));
-					self.day_parting(
-						'summarylistview',
-						{ collection : self.data('days_collection') }
-					);
+						sourceHours = sourceHours.sort(sortfunc)
+						self.data('sourceHours',sourceHours)
+						
+						
+						
+						
+						self.data(
+							'days',
+							[
+								{ id : 0, name : "Sun" },
+								{ id : 1, name : "Mon" },
+								{ id : 2, name : "Tues"},
+								{ id : 3, name : "Wed"},
+								{ id : 4, name : "Thur"}, 
+								{ id : 5, name : "Fri"}, 
+								{ id : 6, name :"Sat"}
+							]
+						);
+						var day_parting_table = $(Mustache.to_html($('#day_parting_tmpl').html(),banner)).appendTo($(self));
+						self.data('dayhours',{days : []});
+						self.data('days_collection', self.day_parting('days',(self.data('days'))));
+						self.data(
+							'day_parting_details_view', 
+							$(self).day_parting(
+								'daysview',
+								{
+									el : $('#day_parting_table'),
+									collection : self.data('days_collection')
+								}
+							)
+						);
+						
+						$('#testhi').click(function(){
+							//$(self).data('days_collection').models[0].subitems.models[0].set({"selected":true});
+							console.log(self.data('days_collection'));
+							self.day_parting(
+								'summarylistview',
+								{ collection : self.data('days_collection') }
+							);
+						});
+						
+						
+						
+						
+						
+					}
 				});
+				
+				
 			});
 		},
 		
@@ -60,19 +87,22 @@
 					var hours = [];
 					for (var n = 0; n < 24; n++) {
 						var dn = this.id * 24 + n;
-						var is_selected = ($.inArray(dn,self.data('selected_dayhours')) > -1) ? true : false;
+						
 						
 						hours.push(
 							{
-								id : dn,
+								_id : self.data('sourceHours')[dn]['_id'],
+								nodeId : dn,
 								hour: ((n % 12) == 0)? 12 : n%12, 
-								selected: is_selected
+								selected: false
 							}
 						);
 						
 					}
 					this.hours = self.day_parting('hours', hours);
+					console.log(this.hours);
 				}
+				
 			});
 			return  Day;
 		},
@@ -187,10 +217,17 @@
 				tagName: 'td', 
 				events: 
 				{ 
-					'change input.day_parting_checkbox' : 'update_checkbox_selection',
 					'mouseover' : 'mouse_over_option',
-					'mousedown'     : 'toggle_option'
+					//'mousedown' : 'toggle_option',
+					'mousedown' : 'dink'
 				},		
+				dink : function()
+				{
+					console.log('clicked')
+					self.data('selectionState', !this.model.get('selected'));
+					this.model.set('selected', self.data('selectionState'))
+					console.log(this.model.get('selected'))
+				},
 				mouse_over_option : function()
 				{
 					if(self.data('isDown')) 
@@ -198,8 +235,7 @@
 						console.log('mouse down')
 						$(this.el).find('input.day_parting_checkbox').prop('checked', function(){return !$(this).prop('checked')})
 						var selection = $(this.el).find('input.day_parting_checkbox').prop('checked');
-						this.model.set({"selected" : selection});
-						return false;
+						this.model.set({"selected" : self.data('selectionState')});
 					} 
 				},
 				toggle_option : function()
@@ -211,6 +247,7 @@
 				initialize: function()
 				{
 					_.bindAll(this, 'render', 'unrender', 'remove','update_checkbox_selection','update_view','mouse_over_option','toggle_option'); 
+					console.log(this.model)
 					this.model.bind('remove', this.unrender);
 					this.model.bind('change',this.update_view);
 					self.data('isDown',false);   // Tracks status of mouse button
@@ -233,7 +270,15 @@
 				},
 				update_view: function()
 				{
-					$(self).day_parting('toggle_summary',this.options );
+					if(this.model.get('selected'))
+					{
+						$(this.el).addClass('day_parting_on');
+					} 
+					else 
+					{
+						$(this.el).removeClass('day_parting_on');
+					}
+					$(this).day_parting('toggle_summary',this.options );
 				},
 				remove: function()
 				{

@@ -1,12 +1,11 @@
 BannerSegmentVariation::Application.routes.draw do
   
   get "ui/create_variations"
-
   get "ui/otex"
-
   get "ui/initalize_banner"
-
   get "ui/banner_details"
+  get "ui/day_parting"
+  get "ui/mock_dayparting_segments_api"
 
   resources :source_segments
 
