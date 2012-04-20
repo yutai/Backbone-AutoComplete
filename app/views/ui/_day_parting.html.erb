@@ -1,10 +1,10 @@
 <div id="day_parting_details"></div>
 
 <script id='day_parting_tmpl' type="text/x-jquery-tmpl">
-	<table class='day_parting_table'><tr><th></th><th colspan="12" style='background:#eee'>AM</th><th colspan="12" style='background:#ddd'>PM</th></table>
+	<table class='day_parting_table table'><tr><th>Day</th><th>Period</th><th colspan="12" style='background:#eee'>AM</th><th colspan="12" style='background:#ddd'>PM</th></table>
 </script>
 <script id='day_parting_day_tmpl' type="text/x-jquery-tmpl">
-	<th>{{day}}</th>
+	<th>{{day}}</th><td><span class='period'></span></td>
 </script>
 <script id='day_parting_item_tmpl' type="text/x-jquery-tmpl">
 	<div class='day_parting_day'>{{name}}</div>

@@ -6,6 +6,7 @@ BannerSegmentVariation::Application.routes.draw do
   get "ui/banner_details"
   get "ui/day_parting"
   get "ui/mock_dayparting_segments_api"
+  get "ui/mock_dayparting_selected"
 
   resources :source_segments
 

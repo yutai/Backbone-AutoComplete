@@ -11,18 +11,14 @@
 					url		: "/ui/mock_dayparting_segments_api.json", 
 					dataType : 'json',
 					type		: 'GET',
-					success	: function(sourceHours)
+					success	: function(response)
 					{
-						
 						function sortfunc(a,b)
 						{
 						return a.nodeId - b.nodeId;
 						}
-						sourceHours = sourceHours.sort(sortfunc)
+						sourceHours = response.segments.sort(sortfunc)
 						self.data('sourceHours',sourceHours)
-						
-						
-						
 						
 						self.data(
 							'days',
@@ -50,13 +46,28 @@
 							)
 						);
 						
-						$('#testhi').click(function(){
-							//$(self).data('days_collection').models[0].subitems.models[0].set({"selected":true});
-							console.log(self.data('days_collection'));
-							self.day_parting(
-								'summarylistview',
-								{ collection : self.data('days_collection') }
-							);
+						function filter_selected(selected)
+						{
+							var filtered = [];
+							_.each(selected,function(hour){
+								filtered.push(hour.id)
+							})
+							return filtered
+						}
+						
+						$.ajax({
+							url : '/ui/mock_dayparting_selected.json',
+							type : 'GET',
+							success : function(response)
+							{
+								var selected = filter_selected(response)
+								for (var d=0; d < self.data('days_collection').length; d++)
+								{
+									self.data('days_collection').models[d]['hours'].each(function(hour){
+										if(_.indexOf(selected,hour.get('_id')) != -1) hour.set('selected', true)
+									});
+								}
+							}
 						});
 						
 						
@@ -65,6 +76,7 @@
 						
 					}
 				});
+				
 				
 				
 			});
@@ -82,7 +94,6 @@
 			var Day = Backbone.Model.extend({
 				initialize : function()
 				{
-					var dink = self.data('selected_dayhours')
 					
 					var hours = [];
 					for (var n = 0; n < 24; n++) {
@@ -91,7 +102,7 @@
 						
 						hours.push(
 							{
-								_id : self.data('sourceHours')[dn]['_id'],
+								_id : self.data('sourceHours')[dn]['id'],
 								nodeId : dn,
 								hour: ((n % 12) == 0)? 12 : n%12, 
 								selected: false
@@ -100,7 +111,6 @@
 						
 					}
 					this.hours = self.day_parting('hours', hours);
-					console.log(this.hours);
 				}
 				
 			});
@@ -219,38 +229,28 @@
 				events: 
 				{ 
 					'mouseover' : 'mouse_over_option',
-					//'mousedown' : 'toggle_option',
-					'mousedown' : 'dink'
+					'mousedown' : 'toggle_selection'
 				},		
-				dink : function()
+				toggle_selection : function()
 				{
-					console.log('clicked')
 					self.data('selectionState', !this.model.get('selected'));
 					this.model.set('selected', self.data('selectionState'))
-					console.log(this.model.get('selected'))
 				},
 				mouse_over_option : function()
 				{
 					if(self.data('isDown')) 
 					{
-						console.log('mouse down')
 						$(this.el).find('input.day_parting_checkbox').prop('checked', function(){return !$(this).prop('checked')})
 						var selection = $(this.el).find('input.day_parting_checkbox').prop('checked');
 						this.model.set({"selected" : self.data('selectionState')});
 					} 
 				},
-				toggle_option : function()
-				{
-					$(this.el).find('input.day_parting_checkbox').prop('checked', function(){return !$(this).prop('checked')})
-					var selection = $(this.el).find('input.day_parting_checkbox').prop('checked');
-					this.model.set({"selected" : selection});
-				},
+			
 				initialize: function()
 				{
-					_.bindAll(this, 'render', 'unrender', 'remove','update_checkbox_selection','update_view','mouse_over_option','toggle_option'); 
-					console.log(this.model)
+					_.bindAll(this, 'render', 'unrender', 'remove','update_checkbox_selection','mouse_over_option','updateView'); 
 					this.model.bind('remove', this.unrender);
-					this.model.bind('change',this.update_view);
+					this.model.bind('change',this.updateView);
 					self.data('isDown',false);   // Tracks status of mouse button
 					$(document).mousedown(function() {
 						self.data('isDown', true);      // When mouse goes down, set isDown to true
@@ -262,14 +262,15 @@
 				},
 				render: function()
 				{
-					$(Mustache.to_html($("#day_parting_item_tmpl").html(),{id: args.model.attributes.id, name: args.model.attributes.hour, selected : args.model.attributes.selected})).appendTo(this.el);
+					$(Mustache.to_html($("#day_parting_item_tmpl").html(),{id: args.model.attributes.id, name: args.model.attributes.hour})).appendTo(this.el);
+					this.updateView();
 					return this; 
 				},
 				unrender: function()
 				{
 					$(this.el).remove();
 				},
-				update_view: function()
+				updateView: function()
 				{
 					if(this.model.get('selected'))
 					{
@@ -299,11 +300,18 @@
 			
 			var View = Backbone.View.extend({
 				initialize: function(){
-					_.bindAll(this, 'render', 'appendHour');
+					_.bindAll(this, 'render', 'appendHour','dink');
 					this.collection.bind('add', this.appendItem); 
+					this.collection.bind('change',this.dink)
 					this.collection.bind('reset', this.render);// collection event binder
 					this.counter = 0;
 					this.render();
+				},
+				dink : function()
+				{
+					var period = $(this.el).parent('tr').find('.period')
+					var selected = this.collection.filter(function(model) {if (model.get('selected')) return model});
+					selected.sort(function(a,b){return a.get('nodeId') - b.get('nodeId') })
 				},
 				clear_selection : function(){
 					this.collection.reset();
@@ -336,10 +344,7 @@
 			var View = Backbone.View.extend({
 				initialize: function()
 				{
-					console.log('log args')
-					console.log(args)
-					console.log('log this')
-					console.log(this)
+					
 					_.bindAll(this, 'render'); 
 					var view = this;
 					
